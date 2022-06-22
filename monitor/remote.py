@@ -12,6 +12,7 @@ while True:
     print('Connected by', addr)
     while True:
         data = conn.recv(1024)
+        print(data)
         if not data:
             break
         print(data.decode('utf-8'))
