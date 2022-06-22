@@ -4,7 +4,7 @@ import socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # print all data received on the socket
-sock.connect(('localhost', 8080))
+sock.connect(('localhost', 9999))
 
 # print all data received on the socket
 while True:
