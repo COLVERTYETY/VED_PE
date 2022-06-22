@@ -39,8 +39,8 @@ try:
         while True:
             try:
                 data = conn.recv(1024)
-            except ConnectionResetError:
-                print("Connection reset by peer")
+            except ConnectionResetError as e:
+                print("Connection reset by peer",e)
                 break
             if not data:
                 break
