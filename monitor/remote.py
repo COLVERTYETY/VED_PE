@@ -48,30 +48,31 @@ try:
                 data = raw.split("/")
                 for i in data:
                     d = i.split(":")
-                    match d[0]:
-                        case "A":
-                            Courant.append(float(d[1]))
-                        case "M":
-                            Tmoteur.append(float(d[1]))
-                        case "B":
-                            Tbatterie.append(float(d[1]))
-                        case "O":
-                            Tmosfet.append(float(d[1]))
-                        case "U":
-                            Vbatterie.append(float(d[1]))
-                        case "T":
-                            Vmoteur.append(float(d[1]))
-                        case "R":
-                            rpm.append(float(d[1]))
-                            # print(rpm[-1])
-                        case "V":
-                            vitesse.append(float(d[1]))
-                        case "D":
-                            dutycycle.append(float(d[1]))
-                        case "C":
-                            consigne.append(float(d[1]))
-                        case "P":
-                            puissance.append(float(d[1]))
+                    if d[0] in "AMBOUTRVDCP":
+                        match d[0]:
+                            case "A":
+                                Courant.append(float(d[1]))
+                            case "M":
+                                Tmoteur.append(float(d[1]))
+                            case "B":
+                                Tbatterie.append(float(d[1]))
+                            case "O":
+                                Tmosfet.append(float(d[1]))
+                            case "U":
+                                Vbatterie.append(float(d[1]))
+                            case "T":
+                                Vmoteur.append(float(d[1]))
+                            case "R":
+                                rpm.append(float(d[1]))
+                                # print(rpm[-1])
+                            case "V":
+                                vitesse.append(float(d[1]))
+                            case "D":
+                                dutycycle.append(float(d[1]))
+                            case "C":
+                                consigne.append(float(d[1]))
+                            case "P":
+                                puissance.append(float(d[1]))
                 if len(Tmoteur) > datasize:
                     Tmoteur.pop(0)
                 if len(Tbatterie)>datasize:
