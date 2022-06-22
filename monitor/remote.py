@@ -4,9 +4,9 @@ import socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # # print all data received on the socket
-sock.bind(('localhost', 8080))
+sock.bind((socket.gethostname(), 8080))
+sock.listen(2)
 while True:
-    sock.listen(1)
     conn, addr = sock.accept()
     print('Connected by', addr)
     while True:
@@ -14,4 +14,3 @@ while True:
         if not data:
             break
         print(data.decode('utf-8'))
-
