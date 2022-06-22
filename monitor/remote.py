@@ -14,6 +14,58 @@ def close_figure(event):
         plt.close(event.canvas.figure)
         done = True
 
+def display():
+    # Clear the current figure
+    plt.clf()
+    # Plot the data
+    plt.subplot(3,2,1)
+    plt.plot(Tmoteur, 'r')
+    plt.plot(Tbatterie, 'b')
+    plt.plot(Tmosfet, 'g')
+    plt.ylabel('Temperature (°C)')
+    plt.xlabel('Time (s)')
+    plt.title('Temperature')
+    plt.legend(['Moteur', 'Batterie', 'Mosfet'])
+    plt.grid(True)
+
+    plt.subplot(3,2,2)
+    plt.plot(Courant, 'r')
+    plt.ylabel('Courant (A)')
+    plt.xlabel('Time (s)')
+    plt.title('Courant')
+    plt.grid(True)
+
+    plt.subplot(3,2,3)
+    plt.plot(Vbatterie, 'r')
+    plt.plot(Vmoteur, 'b')
+    plt.ylabel('Voltage (V)')
+    plt.xlabel('Time (s)')
+    plt.title('Voltage')
+    plt.legend(['Batterie', 'Moteur'])
+    plt.grid(True)
+
+    plt.subplot(3,2,4)
+    plt.plot(rpm, 'r')
+    plt.plot(vitesse, 'b')
+    plt.ylabel('RPM')
+    plt.xlabel('Time (s)')
+    plt.title('RPM')
+    plt.legend(['RPM', 'Vitesse'])
+    plt.grid(True)
+
+    plt.subplot(3,2,5)
+    plt.plot(consigne, 'r')
+    plt.plot(puissance, 'b')
+    plt.plot(np.array(consigne)*np.array(dutycycle)/255, 'g')
+    plt.ylabel('Consigne')
+    plt.xlabel('Time (s)')
+    plt.title('Consigne')
+    plt.legend(['Consigne', 'Puissance', 'DutyCycle'])
+    plt.grid(True)
+
+    plt.draw()
+    plt.pause(0.001)
+
 plt.ion() # interactive mode on
 fig = plt.figure()
 plt.gcf().canvas.mpl_connect('key_press_event', close_figure)
@@ -41,6 +93,8 @@ trick = 10
 
 animation = "\\-/-"
 
+
+display()
 # Server using IPv4 and tcp socket
 with socket(AF_INET, SOCK_STREAM) as server_socket:
     # Bind the socket to the port
@@ -62,6 +116,7 @@ with socket(AF_INET, SOCK_STREAM) as server_socket:
             # Convert data to uppercase
             if data:
                 print("received a new message!   ", animation[trick%len(animation)],end="\r")
+                trick+=1
                 data = data.decode('utf-8')
                 # print(data)
                 sections = data.split('/')
@@ -116,59 +171,7 @@ with socket(AF_INET, SOCK_STREAM) as server_socket:
                 
                 if trick> maxtrick:
                     trick = 0
-                    # Clear the current figure
-                    plt.clf()
-                    # Plot the data
-                    plt.subplot(3,2,1)
-                    plt.plot(Tmoteur, 'r')
-                    plt.plot(Tbatterie, 'b')
-                    plt.plot(Tmosfet, 'g')
-                    plt.ylabel('Temperature (°C)')
-                    plt.xlabel('Time (s)')
-                    plt.title('Temperature')
-                    plt.legend(['Moteur', 'Batterie', 'Mosfet'])
-                    plt.grid(True)
-
-                    plt.subplot(3,2,2)
-                    plt.plot(Courant, 'r')
-                    plt.ylabel('Courant (A)')
-                    plt.xlabel('Time (s)')
-                    plt.title('Courant')
-                    plt.grid(True)
-
-                    plt.subplot(3,2,3)
-                    plt.plot(Vbatterie, 'r')
-                    plt.plot(Vmoteur, 'b')
-                    plt.ylabel('Voltage (V)')
-                    plt.xlabel('Time (s)')
-                    plt.title('Voltage')
-                    plt.legend(['Batterie', 'Moteur'])
-                    plt.grid(True)
-
-                    plt.subplot(3,2,4)
-                    plt.plot(rpm, 'r')
-                    plt.plot(vitesse, 'b')
-                    plt.ylabel('RPM')
-                    plt.xlabel('Time (s)')
-                    plt.title('RPM')
-                    plt.legend(['RPM', 'Vitesse'])
-                    plt.grid(True)
-
-                    plt.subplot(3,2,5)
-                    plt.plot(consigne, 'r')
-                    plt.plot(puissance, 'b')
-                    plt.plot(np.array(consigne)*np.array(dutycycle)/255, 'g')
-                    plt.ylabel('Consigne')
-                    plt.xlabel('Time (s)')
-                    plt.title('Consigne')
-                    plt.legend(['Consigne', 'Puissance', 'DutyCycle'])
-                    plt.grid(True)
-
-                    plt.draw()
-                    plt.pause(0.001)
-
+                    display()
                 
 
                             
-
-        
