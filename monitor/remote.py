@@ -36,8 +36,10 @@ puissance = []
 consigne = []
 dutycycle = [] 
 
-maxtrick = 20
+maxtrick = 10
 trick = 10
+
+animation = "\\-/-"
 
 # Server using IPv4 and tcp socket
 with socket(AF_INET, SOCK_STREAM) as server_socket:
@@ -59,6 +61,7 @@ with socket(AF_INET, SOCK_STREAM) as server_socket:
             #     break
             # Convert data to uppercase
             if data:
+                print("received a new message!   ", animation[trick%len(animation)],end="\r")
                 data = data.decode('utf-8')
                 # print(data)
                 sections = data.split('/')
