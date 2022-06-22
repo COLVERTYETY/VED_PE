@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 
-from sympy import false
-
 # Port number of server
 server_port = 8080
 
