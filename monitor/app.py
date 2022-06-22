@@ -104,7 +104,7 @@ while(not done):
                 puissance.pop(0)
 
             
-            if trick >10:
+            if trick >20:
                 trick = 0
                 # Clear the current figure
                 plt.clf()
