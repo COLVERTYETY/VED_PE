@@ -48,6 +48,7 @@ try:
                 data = raw.split("/")
                 for i in data:
                     d = i.split(":")
+                    print(d)
                     if d and len(d)>0 and  d[0] in "AMBOUTRVDCP":
                         match d[0]:
                             case "A":
