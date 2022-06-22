@@ -37,11 +37,7 @@ try:
         conn, addr = sock.accept()
         print('Connected by', addr)
         while True:
-            try:
-                data = conn.recv(1024)
-            except ConnectionResetError as e:
-                print("Connection reset by peer",e)
-                break
+            data = conn.recv(1024)
             if not data:
                 break
             trick +=1
