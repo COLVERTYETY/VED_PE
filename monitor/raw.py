@@ -15,5 +15,5 @@ while True:
     # Extract message and client address from received msg
     message, client_address = server_socket.recvfrom(2048)
     # Create response message
-    print(message)
+    print(client_address, message)
     # server_socket.sendto(modified_message, client_address)
