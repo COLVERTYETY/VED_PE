@@ -30,7 +30,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # # print all data received on the socket
 sock.bind(("0.0.0.0", 8080))
-sock.listen(5)
+sock.listen(50)
 try:
     while True:
         print("start")
@@ -156,6 +156,6 @@ try:
             except ValueError:
                 print("ValueError")
 
-except KeyboardInterrupt:
+except Exception as e:
     print("KeyboardInterrupt")
     sock.close()
