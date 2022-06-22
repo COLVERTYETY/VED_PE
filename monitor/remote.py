@@ -48,7 +48,7 @@ try:
                 data = raw.split("/")
                 for i in data:
                     d = i.split(":")
-                    if d[0] in "AMBOUTRVDCP":
+                    if d and len(d)>0 and  d[0] in "AMBOUTRVDCP":
                         match d[0]:
                             case "A":
                                 Courant.append(float(d[1]))
