@@ -1,8 +1,4 @@
-"""
-UDP echo server that converts a message
-received from client into uppercase and
-then sends it back to client. 
-"""
+
 from socket import *
 # Port number of server
 server_port = 8080

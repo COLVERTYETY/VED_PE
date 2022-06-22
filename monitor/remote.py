@@ -1,7 +1,24 @@
-import socket
+from socket import *
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
+from sympy import false
+
+# Port number of server
+server_port = 8080
+
+done = False
+
+def close_figure(event):
+    global done
+    if event.key == 'escape':
+        plt.close(event.canvas.figure)
+        done = True
+
+plt.ion() # interactive mode on
+fig = plt.figure()
+plt.gcf().canvas.mpl_connect('key_press_event', close_figure)
 
 datasize = 300
 
@@ -21,87 +38,82 @@ puissance = []
 consigne = []
 dutycycle = [] 
 
-
+maxtrick = 20
 trick = 10
 
+# Server using IPv4 and tcp socket
+with socket(AF_INET, SOCK_STREAM) as server_socket:
+    # Bind the socket to the port
+    server_socket.bind(('', server_port))
+    # Listen for incoming connections
+    server_socket.listen(1)
 
-# # Create a TCP/IP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# # print all data received on the socket
-sock.bind(("0.0.0.0", 8080))
-sock.listen(50)
-try:
-    while True:
-        print("start")
-        conn, addr = sock.accept()
-        print('Connected by', addr)
+    while (not done):
+        # Accept a connection
+        connection, address = server_socket.accept()
+        print('Accepted connection from', address)
+        
+        # while connection is open
         while True:
-            try:
-                data = conn.recv(1024)
-            except ConnectionResetError:
-                print("Connection reset by peer")
-                break
-            if not data:
-                break
-            try:
-                trick +=1
-                # Print the contents of the serial data
-                raw = data.decode('utf-8')
-
-                data = raw.split("/")
-                for i in data:
-                    d = i.split(":")
-                    print(d)
-                    
-                    if  d[0]=='A':
-                        Courant.append(float(d[1]))
-                    elif d[0]== "M":
-                        Tmoteur.append(float(d[1]))
-                    elif d[0] == "B":
-                        Tbatterie.append(float(d[1]))
-                    elif d[0] == "O":
-                        Tmosfet.append(float(d[1]))
-                    elif d[0] == "U":
-                        Vbatterie.append(float(d[1]))
-                    elif d[0] == "T":
-                        Vmoteur.append(float(d[1]))
-                    elif d[0] == "R":
-                        rpm.append(float(d[1]))
-                            # print(rpm[-1])
-                    elif d[0] == "V":
-                        vitesse.append(float(d[1]))
-                    elif d[0] == "D":
-                        dutycycle.append(float(d[1]))
-                    elif d[0] == "C":
-                        consigne.append(float(d[1]))
-                    elif d[0] == "P":
-                        puissance.append(float(d[1]))
+            # Receive data
+            data = connection.recv(1024)
+            # if not data:
+            #     break
+            # Convert data to uppercase
+            if data:
+                data = data.decode('utf-8')
+                # print(data)
+                sections = data.split('/')
+                for s in sections:
+                    if ":" in s:
+                        vals = s.split(':')
+                        vals[1] = float(''.join(c for c in x if (c.isdigit() or c =='.')))
+                        if vals[0] == "A":
+                            Courant.append(vals[1])
+                        elif vals[0] == "M":
+                            Tmoteur.append(vals[1])
+                        elif vals[0] == "B":
+                            Tbatterie.append(vals[1])
+                        elif vals[0] == "O":
+                            Tmosfet.append(vals[1])
+                        elif vals[0] == "U":
+                            Vbatterie.append(vals[1])
+                        elif vals[0] == "T":
+                            Vmoteur.append(vals[1])
+                        elif vals[0] == "R":
+                            rpm.append(vals[1])
+                        elif vals[0] == "V":
+                            vitesse.append(vals[1])
+                        elif vals[0] == "D":
+                            dutycycle.append(vals[1])
+                        elif vals[0] == "C":
+                            consigne.append(vals[1])
+                        elif vals[0] == "P":
+                            puissance.append(vals[1])
                 if len(Tmoteur) > datasize:
                     Tmoteur.pop(0)
-                if len(Tbatterie)>datasize:
+                if len(Tbatterie) > datasize:
                     Tbatterie.pop(0)
-                if len(Tmosfet)>datasize:
+                if len(Tmosfet) > datasize:
                     Tmosfet.pop(0)
-                if len(Courant)>datasize:
+                if len(Courant) > datasize:
                     Courant.pop(0)
-                if len(Vbatterie)>datasize:
-                    Vbatterie.pop(0)
-                if len(Vmoteur)>datasize:
-                    Vmoteur.pop(0)
-                if len(rpm)>datasize:
+                if len(rpm) > datasize:
                     rpm.pop(0)
-                if len(vitesse)>datasize:
+                if len(vitesse) > datasize:
                     vitesse.pop(0)
-                if len(dutycycle)>datasize:
+                if len(dutycycle) > datasize:
                     dutycycle.pop(0)
-                if len(consigne)>datasize:
+                if len(consigne) > datasize:
                     consigne.pop(0)
-                if len(puissance)>datasize:
+                if len(puissance) > datasize:
                     puissance.pop(0)
-
+                if len(Vbatterie) > datasize:
+                    Vbatterie.pop(0)
+                if len(Vmoteur) > datasize:
+                    Vmoteur.pop(0)
                 
-                if trick >10:
+                if trick> maxtrick:
                     trick = 0
                     # Clear the current figure
                     plt.clf()
@@ -153,9 +165,9 @@ try:
 
                     plt.draw()
                     plt.pause(0.001)
-            except ValueError:
-                print("ValueError")
 
-except Exception as e:
-    print("KeyboardInterrupt")
-    sock.close()
+                
+
+                            
+
+        
