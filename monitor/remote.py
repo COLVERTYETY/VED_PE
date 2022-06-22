@@ -123,29 +123,32 @@ with socket(AF_INET, SOCK_STREAM) as server_socket:
                 for s in sections:
                     if ":" in s:
                         vals = s.split(':')
-                        vals[1] = float(''.join(c for c in vals[1] if (c.isdigit() or c =='.')))
-                        if vals[0] == "A":
-                            Courant.append(vals[1])
-                        elif vals[0] == "M":
-                            Tmoteur.append(vals[1])
-                        elif vals[0] == "B":
-                            Tbatterie.append(vals[1])
-                        elif vals[0] == "O":
-                            Tmosfet.append(vals[1])
-                        elif vals[0] == "U":
-                            Vbatterie.append(vals[1])
-                        elif vals[0] == "T":
-                            Vmoteur.append(vals[1])
-                        elif vals[0] == "R":
-                            rpm.append(vals[1])
-                        elif vals[0] == "V":
-                            vitesse.append(vals[1])
-                        elif vals[0] == "D":
-                            dutycycle.append(vals[1])
-                        elif vals[0] == "C":
-                            consigne.append(vals[1])
-                        elif vals[0] == "P":
-                            puissance.append(vals[1])
+                        try:
+                            vals[1] = float(''.join(c for c in vals[1] if (c.isdigit() or c =='.')))
+                            if vals[0] == "A":
+                                Courant.append(vals[1])
+                            elif vals[0] == "M":
+                                Tmoteur.append(vals[1])
+                            elif vals[0] == "B":
+                                Tbatterie.append(vals[1])
+                            elif vals[0] == "O":
+                                Tmosfet.append(vals[1])
+                            elif vals[0] == "U":
+                                Vbatterie.append(vals[1])
+                            elif vals[0] == "T":
+                                Vmoteur.append(vals[1])
+                            elif vals[0] == "R":
+                                rpm.append(vals[1])
+                            elif vals[0] == "V":
+                                vitesse.append(vals[1])
+                            elif vals[0] == "D":
+                                dutycycle.append(vals[1])
+                            elif vals[0] == "C":
+                                consigne.append(vals[1])
+                            elif vals[0] == "P":
+                                puissance.append(vals[1])
+                        except ValueError as e:
+                            print("Error: ",e,"with", vals[1])
                 if len(Tmoteur) > datasize:
                     Tmoteur.pop(0)
                 if len(Tbatterie) > datasize:
