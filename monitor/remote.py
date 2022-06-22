@@ -45,7 +45,7 @@ with socket(AF_INET, SOCK_STREAM) as server_socket:
     server_socket.bind(('', server_port))
     # Listen for incoming connections
     server_socket.listen(1)
-
+    print("SOCKET IS READY !!")
     while (not done):
         # Accept a connection
         connection, address = server_socket.accept()
@@ -65,7 +65,7 @@ with socket(AF_INET, SOCK_STREAM) as server_socket:
                 for s in sections:
                     if ":" in s:
                         vals = s.split(':')
-                        vals[1] = float(''.join(c for c in x if (c.isdigit() or c =='.')))
+                        vals[1] = float(''.join(c for c in vals[1] if (c.isdigit() or c =='.')))
                         if vals[0] == "A":
                             Courant.append(vals[1])
                         elif vals[0] == "M":
