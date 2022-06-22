@@ -88,7 +88,7 @@ puissance = []
 consigne = []
 dutycycle = [] 
 
-maxtrick = 10
+maxtrick = 20
 trick = 10
 
 animation = "\\-/-"
