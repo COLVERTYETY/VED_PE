@@ -37,7 +37,11 @@ try:
         conn, addr = sock.accept()
         print('Connected by', addr)
         while True:
-            data = conn.recv(1024)
+            try:
+                data = conn.recv(1024)
+            except ConnectionResetError:
+                print("Connection reset by peer")
+                break
             if not data:
                 break
             try:
@@ -49,6 +53,7 @@ try:
                 for i in data:
                     d = i.split(":")
                     print(d)
+                    
                     if  d[0]=='A':
                         Courant.append(float(d[1]))
                     elif d[0]== "M":
