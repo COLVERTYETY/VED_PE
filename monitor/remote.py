@@ -98,7 +98,7 @@ display()
 # Server using IPv4 and tcp socket
 with socket(AF_INET, SOCK_STREAM) as server_socket:
     # Bind the socket to the port
-    server_socket.bind(('', server_port))
+    server_socket.bind(('0.0.0.0', server_port))
     # Listen for incoming connections
     server_socket.listen(1)
     print("SOCKET IS READY !!")
