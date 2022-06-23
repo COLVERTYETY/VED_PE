@@ -56,7 +56,7 @@ def display():
     plt.subplot(3,2,5)
     plt.plot(consigne, 'r')
     plt.plot(puissance, 'b')
-    plt.plot(np.array(consigne)*np.array(dutycycle)/255, 'g')
+    plt.plot(200*np.array(dutycycle)/255, 'g')
     plt.ylabel('Consigne')
     plt.xlabel('Time (s)')
     plt.title('Consigne')
@@ -148,7 +148,7 @@ with socket(AF_INET, SOCK_STREAM) as server_socket:
                             elif vals[0] == "P":
                                 puissance.append(vals[1])
                         except ValueError as e:
-                            print("Error: ",e,"with", vals[1])
+                            print("Error: ",e,"with", vals[1], vals[0])
                 if len(Tmoteur) > datasize:
                     Tmoteur.pop(0)
                 if len(Tbatterie) > datasize:
