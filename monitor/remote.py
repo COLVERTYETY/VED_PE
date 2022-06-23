@@ -141,7 +141,7 @@ with socket(AF_INET, SOCK_STREAM) as server_socket:
                                 rpm.append(vals[1])
                             elif vals[0] == "V":
                                 vitesse.append(vals[1])
-                                print(vals[-1])
+                                # print(vals[-1])
                             elif vals[0] == "D":
                                 dutycycle.append(vals[1])
                             elif vals[0] == "C":

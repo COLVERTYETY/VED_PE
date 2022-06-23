@@ -224,10 +224,10 @@ void loop() {
 
 void interruption(){
   float occurrence = (float)(millis());
-  period = occurrence - lastoccurrence;
+  period = (occurrence - lastoccurrence)/60000.0;
   lastoccurrence = occurrence;
   if(period>0){
-    vitesse=1.0/(period/6000.0);// ms -> min rpm
+    vitesse=1.0/(period);// ms -> min rpm
   }
   //Serial.println(vitesse);
 }
