@@ -96,86 +96,91 @@ animation = "\\-/-"
 
 display()
 # Server using IPv4 and tcp socket
+
 with socket(AF_INET, SOCK_STREAM) as server_socket:
-    # Bind the socket to the port
-    server_socket.bind(('0.0.0.0', server_port))
-    # Listen for incoming connections
-    server_socket.listen(1)
-    print("SOCKET IS READY !!")
-    while (not done):
-        # Accept a connection
-        connection, address = server_socket.accept()
-        print('Accepted connection from', address)
-        
-        # while connection is open
-        while True:
-            # Receive data
-            data = connection.recv(1024)
-            # if not data:
-            #     break
-            # Convert data to uppercase
-            if data:
-                # print("received a new message!   ", animation[trick%len(animation)],end="\r")
-                trick+=1
-                data = data.decode('utf-8')
-                # print(data)
-                sections = data.split('/')
-                for s in sections:
-                    if ":" in s:
-                        vals = s.split(':')
-                        try:
-                            vals[1] = float(''.join(c for c in vals[1] if (c.isdigit() or c =='.')))
-                            if vals[0] == "A":
-                                Courant.append(vals[1])
-                            elif vals[0] == "M":
-                                Tmoteur.append(vals[1])
-                            elif vals[0] == "B":
-                                Tbatterie.append(vals[1])
-                            elif vals[0] == "O":
-                                Tmosfet.append(vals[1])
-                            elif vals[0] == "U":
-                                Vbatterie.append(vals[1])
-                            elif vals[0] == "T":
-                                Vmoteur.append(vals[1])
-                            elif vals[0] == "R":
-                                rpm.append(vals[1])
-                            elif vals[0] == "V":
-                                vitesse.append(vals[1])
-                                # print(vals[-1])
-                            elif vals[0] == "D":
-                                dutycycle.append(vals[1])
-                            elif vals[0] == "C":
-                                consigne.append(vals[1])
-                            elif vals[0] == "P":
-                                puissance.append(vals[1])
-                        except ValueError as e:
-                            print("Error: ",e,"with", vals[1], vals[0])
-                if len(Tmoteur) > datasize:
-                    Tmoteur.pop(0)
-                if len(Tbatterie) > datasize:
-                    Tbatterie.pop(0)
-                if len(Tmosfet) > datasize:
-                    Tmosfet.pop(0)
-                if len(Courant) > datasize:
-                    Courant.pop(0)
-                if len(rpm) > datasize:
-                    rpm.pop(0)
-                if len(vitesse) > datasize:
-                    vitesse.pop(0)
-                if len(dutycycle) > datasize:
-                    dutycycle.pop(0)
-                if len(consigne) > datasize:
-                    consigne.pop(0)
-                if len(puissance) > datasize:
-                    puissance.pop(0)
-                if len(Vbatterie) > datasize:
-                    Vbatterie.pop(0)
-                if len(Vmoteur) > datasize:
-                    Vmoteur.pop(0)
-                
-                if trick> maxtrick:
-                    trick = 0
-                    display()
-                
+    try:
+        # Bind the socket to the port
+        server_socket.bind(('0.0.0.0', server_port))
+        # Listen for incoming connections
+        server_socket.listen(1)
+        print("SOCKET IS READY !!")
+        while (not done):
+            # Accept a connection
+            connection, address = server_socket.accept()
+            print('Accepted connection from', address)
+            
+            # while connection is open
+            while True:
+                # Receive data
+                data = connection.recv(1024)
+                # if not data:
+                #     break
+                # Convert data to uppercase
+                if data:
+                    # print("received a new message!   ", animation[trick%len(animation)],end="\r")
+                    trick+=1
+                    data = data.decode('utf-8')
+                    # print(data)
+                    sections = data.split('/')
+                    for s in sections:
+                        if ":" in s:
+                            vals = s.split(':')
+                            try:
+                                vals[1] = float(''.join(c for c in vals[1] if (c.isdigit() or c =='.')))
+                                if vals[0] == "A":
+                                    Courant.append(vals[1])
+                                elif vals[0] == "M":
+                                    Tmoteur.append(vals[1])
+                                elif vals[0] == "B":
+                                    Tbatterie.append(vals[1])
+                                elif vals[0] == "O":
+                                    Tmosfet.append(vals[1])
+                                elif vals[0] == "U":
+                                    Vbatterie.append(vals[1])
+                                elif vals[0] == "T":
+                                    Vmoteur.append(vals[1])
+                                elif vals[0] == "R":
+                                    rpm.append(vals[1])
+                                elif vals[0] == "V":
+                                    vitesse.append(vals[1])
+                                    # print(vals[-1])
+                                elif vals[0] == "D":
+                                    dutycycle.append(vals[1])
+                                elif vals[0] == "C":
+                                    consigne.append(vals[1])
+                                elif vals[0] == "P":
+                                    puissance.append(vals[1])
+                            except ValueError as e:
+                                print("Error: ",e,"with", vals[1], vals[0])
+                    if len(Tmoteur) > datasize:
+                        Tmoteur.pop(0)
+                    if len(Tbatterie) > datasize:
+                        Tbatterie.pop(0)
+                    if len(Tmosfet) > datasize:
+                        Tmosfet.pop(0)
+                    if len(Courant) > datasize:
+                        Courant.pop(0)
+                    if len(rpm) > datasize:
+                        rpm.pop(0)
+                    if len(vitesse) > datasize:
+                        vitesse.pop(0)
+                    if len(dutycycle) > datasize:
+                        dutycycle.pop(0)
+                    if len(consigne) > datasize:
+                        consigne.pop(0)
+                    if len(puissance) > datasize:
+                        puissance.pop(0)
+                    if len(Vbatterie) > datasize:
+                        Vbatterie.pop(0)
+                    if len(Vmoteur) > datasize:
+                        Vmoteur.pop(0)
+                    
+                    if trick> maxtrick:
+                        trick = 0
+                        display()
+                    
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt")
+        server_socket.close()
 
                             
