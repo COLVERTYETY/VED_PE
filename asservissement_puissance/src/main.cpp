@@ -56,7 +56,7 @@ float kd = 0.0; //0.1
 //SoftwareSerial mySerial(5, 6); // RX, TX
 
 //FOR THE PWM :
-// #include <PWM.h> //for a PWM frequency of our choice
+//#include <PWM.h> //for a PWM frequency of our choice
 
 // Déclaration des variables de stockage de la valeur des capteurs (valeur sur 10 bits)
 uint32_t actualtime;
@@ -71,7 +71,7 @@ float vitesse;
 float courantLimite = 1; //A
 float perimetrepardeux = 1.59;
 float lastoccurrence=0.0;
-float puissanceconsigne = 50.0; // watt
+float puissanceconsigne = 200.0; // watt
 float dutyCycle=0.0;
 float rpm;
 float period;
@@ -127,13 +127,15 @@ void setup() {
   InitialisationEcriture (fichierSD);
   
     //FOR THE PWM :
-    TCCR1B = TCCR1B & B11111000 | B00000010; // for PWM frequency of 3921.16 Hz
     pinMode(9, OUTPUT);
     analogWrite(9,0);
-    //pwmWrite (9, 0);
+    TCCR1B = TCCR1B & B11111000 | B00000001; // for PWM frequency of 3921.16 Hz
+    
+    //analogWrite(9,0);
     //InitTimersSafe();
     //SetPinFrequencySafe(9, 17200);
-
+    //pwmWrite (9, 0);
+    
     //Capteur de vitesse
     pinMode (2, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(2),interruption,RISING);
@@ -190,7 +192,8 @@ void loop() {
 
   //Activation du moteur
   analogWrite(9,(int)dutyCycle);
-  
+  TCCR1B = TCCR1B & B11111000 | B00000001; // for PWM frequency of 3921.16 Hz
+  //pwmWrite(9, (int)dutyCycle);
   if (debug){
     Serial.print("/A: ");
     Serial.print(courantMoteur);
@@ -214,7 +217,7 @@ void loop() {
     Serial.print(target);
     Serial.print("/P: ");
     Serial.print(puissanceMoteur);
-    Serial.println();
+    //Serial.print();
   }
   delay(50);
 }
@@ -284,7 +287,7 @@ void EcritureCarteSD (File actualfichierSD)
   // SENDING DATA TO SD CARD
   actualfichierSD = SD.open(nomFichier, FILE_WRITE);
   if (actualfichierSD) {
-    Serial.println(F("Ecriture en cours"));
+    //Serial.println(F("Ecriture en cours"));
     actualfichierSD.print(actualtime);
     actualfichierSD.print(";");
     actualfichierSD.print(puissanceMoteur);

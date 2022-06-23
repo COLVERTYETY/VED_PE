@@ -115,7 +115,7 @@ with socket(AF_INET, SOCK_STREAM) as server_socket:
             #     break
             # Convert data to uppercase
             if data:
-                print("received a new message!   ", animation[trick%len(animation)],end="\r")
+                # print("received a new message!   ", animation[trick%len(animation)],end="\r")
                 trick+=1
                 data = data.decode('utf-8')
                 # print(data)
@@ -141,6 +141,7 @@ with socket(AF_INET, SOCK_STREAM) as server_socket:
                                 rpm.append(vals[1])
                             elif vals[0] == "V":
                                 vitesse.append(vals[1])
+                                print(vals[-1])
                             elif vals[0] == "D":
                                 dutycycle.append(vals[1])
                             elif vals[0] == "C":
