@@ -46,11 +46,11 @@ net.createServer(function(sock) {
         console.log(buffer);
         // isolate a valid json
         var json = buffer.match(/^\{.*\}/);
-        if(json) {
+        if(json && json.length > 0) {
             buffer = "";
             // console.log(json);
             try {
-                const parsed_data = JSON.parse(data)
+                const parsed_data = JSON.parse(json[0])
                 // console.log(parsed_data)
                 // check if a socketio is open
                     if ("A" in parsed_data) {
