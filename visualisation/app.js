@@ -87,6 +87,9 @@ net.createServer(function(sock) {
                     if ("C" in parsed_data) {
                         io.emit('C', parseFloat(parsed_data["C"]));
                     }
+                    if ("L" in parsed_data) {
+                        io.emit('L', parseFloat(parsed_data["L"]));
+                    }
             } catch(err) {
                 console.error(err)
                 }

@@ -227,6 +227,8 @@ void loop() {
   Serial.print(target);
   Serial.print(",\"P\":");
   Serial.print(puissanceMoteur);
+  Serial.print(",\"L\":");
+  Serial.print(potVal);
   Serial.print("}");
   Serial.println();
   }

@@ -1,22 +1,6 @@
 
 var socket = io();
 
-var Tmoteur = [];
-var Tbatterie = [];
-var Tmosfet = [];
-
-var Courant = [];
-
-var vitesse = [];
-var rpm = [];
-
-var Vbatterie = [];
-var Vmoteur = [];
-
-var puissance = [];
-var consigne = [];
-var dutycycle = [] ;
-
 maxsize = 200;
 
 var chartCourant = new Chart(document.getElementById("chartCourant"), {
@@ -141,7 +125,7 @@ var chartPower= new Chart(document.getElementById("chartPower"), {
     data: {
         labels: [],
         datasets: [{
-            label: "dutyCycle",
+            label: "consigne",
             backgroundColor: 'rgba(255, 99, 132, 0.2)',
             borderColor: 'rgba(255, 99, 132, 1)',
             data: [],
@@ -153,11 +137,33 @@ var chartPower= new Chart(document.getElementById("chartPower"), {
             borderColor: 'rgba(54, 162, 235, 1)',
             data: [],
             fill: false,
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        title: {
+            display: true,
+            text: 'Temperature'
+        }
+    }
+});
+
+var chartInput= new Chart(document.getElementById("chartInput"), {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: "dutyCycle",
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            data: [],
+            fill: false,
         },
         {
-            label: "Consigne",
-            backgroundColor: 'rgba(255, 206, 86, 0.2)',
-            borderColor: 'rgba(255, 206, 86, 1)',
+            label: "pot",
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
             data: [],
             fill: false,
         }]
@@ -300,16 +306,31 @@ socket.on('V', function(data) {
 socket.on('D', function(data) {
     // create array of indexes for the labels
     var indexes = [];
-    for (var i = 0; i < chartPower.data.datasets[0].data.length; i++) {
+    for (var i = 0; i < chartInput.data.datasets[0].data.length; i++) {
         indexes.push(i);
     }
-    chartPower.data.labels=indexes;
+    chartInput.data.labels=indexes;
     // chartCourant.update('none');
-    chartPower.data.datasets[0].data.push(data);
-    if(chartPower.data.datasets[0].data.length > maxsize) {
-        chartPower.data.datasets[0].data.shift();
+    chartInput.data.datasets[0].data.push(data);
+    if(chartInput.data.datasets[0].data.length > maxsize) {
+        chartInput.data.datasets[0].data.shift();
     }
-    chartPower.update('none');
+    chartInput.update('none');
+});
+
+socket.on('L', function(data) {
+    // create array of indexes for the labels
+    var indexes = [];
+    for (var i = 0; i < chartInput.data.datasets[1].data.length; i++) {
+        indexes.push(i);
+    }
+    chartInput.data.labels=indexes;
+    // chartCourant.update('none');
+    chartInput.data.datasets[1].data.push(data);
+    if(chartInput.data.datasets[1].data.length > maxsize) {
+        chartInput.data.datasets[1].data.shift();
+    }
+    chartInput.update('none');
 });
 
 socket.on('P', function(data) {
@@ -330,14 +351,14 @@ socket.on('P', function(data) {
 socket.on('C', function(data) {
     // create array of indexes for the labels
     var indexes = [];
-    for (var i = 0; i < chartPower.data.datasets[2].data.length; i++) {
+    for (var i = 0; i < chartPower.data.datasets[0].data.length; i++) {
         indexes.push(i);
     }
     chartPower.data.labels=indexes;
     // chartCourant.update('none');
-    chartPower.data.datasets[2].data.push(data);
-    if(chartPower.data.datasets[2].data.length > maxsize) {
-        chartPower.data.datasets[2].data.shift();
+    chartPower.data.datasets[0].data.push(data);
+    if(chartPower.data.datasets[0].data.length > maxsize) {
+        chartPower.data.datasets[0].data.shift();
     }
     chartPower.update('none');
 });
