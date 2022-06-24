@@ -156,7 +156,8 @@ void loop() {
   
   //Porcentage du potentiomètre (entre 0 et 1)
   potVal = analogRead(A4)/1023.0;
-  potVal = potVal*potVal*potVal;
+  // potVal = 2.45*potVal*potVal*potVal -2.12*potVal*potVal + 0.67*potVal;
+
   
   //On donne une consigne au moteur qui dépend de la puissance désirée
   float target = puissanceconsigne*potVal;
@@ -199,7 +200,7 @@ void loop() {
   TCCR1B = TCCR1B & B11111000 | B00000001; // for PWM frequency of 3921.16 Hz
   //pwmWrite(9, (int)dutyCycle);
   sendcount++;
-  if (sendcount>sendrate){
+  if (sendcount>=sendrate){
     sendcount=0;
     // format the message as json
     String json = "{\"A\":" + String(courantMoteur) + ",\"R\":" + String(rpm) + ",\"V\":" + String(vitesse) + ",\"U\":" + String(tensionbatterie) + ",\"T\":" + String(analogRead(A1)/1024.0*vcc*10.0) + ",\"M\":" + String(temperaturemoteur) + ",\"B\":" + String(temperaturebatterie) + ",\"O\":" + String(temperaturemosfet) + ",\"D\":" + String(dutyCycle) + ",\"C\":" + String(target) + ",\"P\":" + String(puissanceMoteur) + "}";

@@ -43,7 +43,7 @@ net.createServer(function(sock) {
     sock.on('data', function(data) {
         // console.log(data);
         buffer += data;
-        // console.log(buffer);
+        console.log(buffer);
         // isolate a valid json
         var json = buffer.match(/^\{.*\}/);
         if(json && json.length > 0) {
