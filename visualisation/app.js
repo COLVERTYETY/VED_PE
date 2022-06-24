@@ -43,7 +43,6 @@ net.createServer(function(sock) {
             const parsed_data = JSON.parse(data)
             // console.log(parsed_data)
             // check if a socketio is open
-            if(io.connected) {
                 if ("A" in parsed_data) {
                     //send the value to all clients
                     io.emit('A', parseFloat(parsed_data["A"]));
@@ -78,7 +77,6 @@ net.createServer(function(sock) {
                 if ("C" in parsed_data) {
                     io.emit('C', parseFloat(parsed_data["C"]));
                 }
-            }
           } catch(err) {
             console.error(err)
             }
