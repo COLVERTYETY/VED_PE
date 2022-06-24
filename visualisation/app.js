@@ -42,40 +42,42 @@ net.createServer(function(sock) {
         try {
             const parsed_data = JSON.parse(data)
             // console.log(parsed_data)
-            // check if "A" is a key in the parsed data
-            if ("A" in parsed_data) {
-                //send the value to all clients
-                io.emit('A', parseFloat(parsed_data["A"]));
-            }
-            if ("M" in parsed_data) {
-                io.emit('M', parseFloat(parsed_data["M"]));
-            }
-            if ("B" in parsed_data) {
-                io.emit('B', parseFloat(parsed_data["B"]));
-            }
-            if ("O" in parsed_data) {
-                io.emit('O', parseFloat(parsed_data["O"]));
-            }
-            if ("U" in parsed_data) {
-                io.emit('U', parseFloat(parsed_data["U"]));
-            }
-            if ("T" in parsed_data) {
-                io.emit('T', parseFloat(parsed_data["T"]));
-            }
-            if ("R" in parsed_data) {
-                io.emit('R', parseFloat(parsed_data["R"]));
-            }
-            if ("V" in parsed_data) {
-                io.emit('V', parseFloat(parsed_data["V"]));
-            }
-            if ("D" in parsed_data) {
-                io.emit('D', parseFloat(parsed_data["D"]));
-            }
-            if ("P" in parsed_data) {
-                io.emit('P', parseFloat(parsed_data["P"]));
-            }
-            if ("C" in parsed_data) {
-                io.emit('C', parseFloat(parsed_data["C"]));
+            // check if a socketio is open
+            if(io.connected) {
+                if ("A" in parsed_data) {
+                    //send the value to all clients
+                    io.emit('A', parseFloat(parsed_data["A"]));
+                }
+                if ("M" in parsed_data) {
+                    io.emit('M', parseFloat(parsed_data["M"]));
+                }
+                if ("B" in parsed_data) {
+                    io.emit('B', parseFloat(parsed_data["B"]));
+                }
+                if ("O" in parsed_data) {
+                    io.emit('O', parseFloat(parsed_data["O"]));
+                }
+                if ("U" in parsed_data) {
+                    io.emit('U', parseFloat(parsed_data["U"]));
+                }
+                if ("T" in parsed_data) {
+                    io.emit('T', parseFloat(parsed_data["T"]));
+                }
+                if ("R" in parsed_data) {
+                    io.emit('R', parseFloat(parsed_data["R"]));
+                }
+                if ("V" in parsed_data) {
+                    io.emit('V', parseFloat(parsed_data["V"]));
+                }
+                if ("D" in parsed_data) {
+                    io.emit('D', parseFloat(parsed_data["D"]));
+                }
+                if ("P" in parsed_data) {
+                    io.emit('P', parseFloat(parsed_data["P"]));
+                }
+                if ("C" in parsed_data) {
+                    io.emit('C', parseFloat(parsed_data["C"]));
+                }
             }
           } catch(err) {
             console.error(err)
