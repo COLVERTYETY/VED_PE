@@ -38,7 +38,7 @@ net.createServer(function(sock) {
     console.log('CONNECTED DATA:',sock.remoteAddress,':',sock.remotePort);
     sock.setEncoding("utf8"); //set data encoding (either 'ascii', 'utf8', or 'base64')
     sock.on('data', function(data) {
-        // console.log(data);
+        console.log(data);
         try {
             const parsed_data = JSON.parse(data)
             // console.log(parsed_data)
