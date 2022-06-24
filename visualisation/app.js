@@ -43,12 +43,12 @@ net.createServer(function(sock) {
     sock.on('data', function(data) {
         // console.log(data);
         buffer += data;
-        console.log(buffer);
+        // console.log(buffer);
         // isolate a valid json
         var json = buffer.match(/^\{.*\}/);
         if(json && json.length > 0) {
             buffer = "";
-            console.log(json);
+            // console.log(json);
             try {
                 const parsed_data = JSON.parse(json[0])
                 // console.log(parsed_data)

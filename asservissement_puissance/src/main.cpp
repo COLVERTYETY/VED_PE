@@ -203,8 +203,32 @@ void loop() {
   if (sendcount>=sendrate){
     sendcount=0;
     // format the message as json
-    String json = "{\"A\":" + String(courantMoteur) + ",\"R\":" + String(rpm) + ",\"V\":" + String(vitesse) + ",\"U\":" + String(tensionbatterie) + ",\"T\":" + String(analogRead(A1)/1024.0*vcc*10.0) + ",\"M\":" + String(temperaturemoteur) + ",\"B\":" + String(temperaturebatterie) + ",\"O\":" + String(temperaturemosfet) + ",\"D\":" + String(dutyCycle) + ",\"C\":" + String(target) + ",\"P\":" + String(puissanceMoteur) + "}";
-    Serial.println(json);
+    // String json = "{\"A\":" + String(courantMoteur) + ",\"R\":" + String(rpm) + ",\"V\":" + String(vitesse) + ",\"U\":" + String(tensionbatterie) + ",\"T\":" + String(analogRead(A1)/1024.0*vcc*10.0) + ",\"M\":" + String(temperaturemoteur) + ",\"B\":" + String(temperaturebatterie) + ",\"O\":" + String(temperaturemosfet) + ",\"D\":" + String(dutyCycle) + ",\"C\":" + String(target) + ",\"P\":" + String(puissanceMoteur) + "}";
+    //format message in json with only the courant
+  Serial.print("{\"A\":");
+  Serial.print(courantMoteur);
+  Serial.print(",\"R\":");
+  Serial.print(rpm);
+  Serial.print(",\"V\":");
+  Serial.print(vitesse);
+  Serial.print(",\"U\":");
+  Serial.print(tensionbatterie);
+  Serial.print(",\"T\":");
+  Serial.print(analogRead(A1)/1024.0*vcc*10.0);
+  Serial.print(",\"M\":");
+  Serial.print(temperaturemoteur);
+  Serial.print(",\"B\":");
+  Serial.print(temperaturebatterie);
+  Serial.print(",\"O\":");
+  Serial.print(temperaturemosfet);
+  Serial.print(",\"D\":");
+  Serial.print(dutyCycle);
+  Serial.print(",\"C\":");
+  Serial.print(target);
+  Serial.print(",\"P\":");
+  Serial.print(puissanceMoteur);
+  Serial.print("}");
+  Serial.println();
   }
   delay(50);
 }
