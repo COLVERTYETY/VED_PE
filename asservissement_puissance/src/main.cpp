@@ -1,7 +1,8 @@
 #include <Arduino.h>
-#include <avr/io.h> 
-#include <avr/interrupt.h>
 
+//FOR SD CARD :
+#include <SPI.h>
+#include <SD.h>
 /* CODE PROTOTYPE - CARTE DATALOGGER*/
 // Par Nicolas Stas
 /*
@@ -40,8 +41,11 @@
     - D12 : MISO (liaison SPI avec datalogger)
     - D13 : SCK (liaison SPI avec datalogger)
 */
-#define debug true
-
+// for platformio
+long readVcc();
+void EcritureCarteSD(File actualfichierSD);
+void InitialisationEcriture(File fichierSD);
+void interruption();
 // PID
 float erreur;
 float erreurPrecedente;
@@ -80,10 +84,9 @@ float omega=102.0;//rpm/V
 uint8_t cpt = 0;
 float potVal;
 float Amp0 = 102.0;
+int sendcount=0;
+int sendrate=4; // 4*50 = 200ms
 
-//FOR SD CARD :
-#include <SPI.h>
-#include <SD.h>
 File fichierSD;
 String nomFichier = "";
 
@@ -124,7 +127,7 @@ void setup() {
   }
   nomFichier = "interu" + String(index) + ".csv";
   Serial.println(nomFichier);
-  InitialisationEcriture (fichierSD);
+  InitialisationEcriture(fichierSD);
   
     //FOR THE PWM :
     pinMode(9, OUTPUT);
@@ -142,6 +145,7 @@ void setup() {
 
     
 }
+
 
 void loop() {
   
@@ -194,30 +198,12 @@ void loop() {
   analogWrite(9,(int)dutyCycle);
   TCCR1B = TCCR1B & B11111000 | B00000001; // for PWM frequency of 3921.16 Hz
   //pwmWrite(9, (int)dutyCycle);
-  if (debug){
-    Serial.print("/A: ");
-    Serial.print(courantMoteur);
-    Serial.print("/R: ");
-    Serial.print(rpm);
-    Serial.print("/V: ");
-    Serial.print(vitesse);
-    Serial.print("/U: ");
-    Serial.print(tensionbatterie);
-    Serial.print("/T: ");
-    Serial.print(analogRead(A1)/1024.0*vcc*10.0);
-    Serial.print("/M: ");
-    Serial.print(temperaturemoteur);
-    Serial.print("/B: ");
-    Serial.print(temperaturebatterie);
-    Serial.print("/O: ");
-    Serial.print(temperaturemosfet);
-    Serial.print("/D: ");
-    Serial.print(dutyCycle);
-    Serial.print("/C: ");
-    Serial.print(target);
-    Serial.print("/P: ");
-    Serial.print(puissanceMoteur);
-    //Serial.print();
+  sendcount++;
+  if (sendcount>sendrate){
+    sendcount=0;
+    // format the message as json
+    String json = "{\"A\":" + String(courantMoteur) + ",\"R\":" + String(rpm) + ",\"V\":" + String(vitesse) + ",\"U\":" + String(tensionbatterie) + ",\"T\":" + String(analogRead(A1)/1024.0*vcc*10.0) + ",\"M\":" + String(temperaturemoteur) + ",\"B\":" + String(temperaturebatterie) + ",\"O\":" + String(temperaturemosfet) + ",\"D\":" + String(dutyCycle) + ",\"C\":" + String(target) + ",\"P\":" + String(puissanceMoteur) + "}";
+    Serial.println(json);
   }
   delay(50);
 }
