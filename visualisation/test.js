@@ -21,6 +21,24 @@ var buffer = ""
 // time stamp to evaluate rate of data
 var last_timestamp = 0;
 
+// fils system
+const fs = require('fs'); 
+var databuffer="";
+
+// databackup timer 60s
+const interval = setInterval(function() {
+    // if last message received is over 30s old
+    if( ((Date.now() - last_timestamp) >30000) && (databuffer.length>0)){
+        var title = "DATA/"+ new Date().toISOString() +".csv";
+        fs.writeFile(title,databuffer,function (err,data) {
+            if (err) {
+              return console.log(err);
+            }
+            console.log("DATA SAVED SUCESSFULLY !!");
+          });
+        databuffer="";
+    }
+  }, 60000);
 
 // sendFile will go here
 app.get('/', function(req, res) {
@@ -29,6 +47,8 @@ app.get('/', function(req, res) {
 
 // handle static assets
 app.use(express.static(__dirname));
+
+
 
 // connect socket
 io.on('connection', function(socket) {
@@ -46,15 +66,16 @@ net.createServer(function(sock) {
     sock.setEncoding("utf8"); //set data encoding (either 'ascii', 'utf8', or 'base64')
     sock.on('data', function(data) {
         // console.log(data);
-        buffer += data;
+        buffer += data; // for packet reconstitution
         // console.log(buffer);
         // isolate a valid json
         var json = buffer.match(/^\{.*\}/);
         if(json && json.length > 0) {
             var now = Date.now();
+            // add the data to databuffer in csv format
+            databuffer+=json+"\n"
             // print the rate of data without skipping lines
             // console.log("rate is: "+ (now - last_timestamp)+"ms\r");
-            io.emit('rate', now - last_timestamp);
             buffer = "";
             // console.log(json);
             try {
