@@ -13,19 +13,47 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const {Server} = require('socket.io');
+const { Console } = require('console');
 const io = new Server(server);
 
 // data buffer
-
 var buffer = ""
+// time stamp to evaluate rate of data
+var last_timestamp = 0;
 
-// sendFile will go here
-app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, '/index.html'));
+// fils system
+const fs = require('fs'); 
+var databuffer="";
+
+// databackup timer 60s
+const interval = setInterval(function() {
+    // if last message received is over 30s old
+    if( ((Date.now() - last_timestamp) >30000) && (databuffer.length>0)){
+        var title = "DATA/"+ new Date().toISOString() +".csv";
+        fs.writeFile(title,databuffer,function (err,data) {
+            if (err) {
+              return console.log(err);
+            }
+            console.log("DATA SAVED SUCESSFULLY !!");
+          });
+        databuffer="";
+    }
+  }, 60000);
+
+
+app.get('/lines', function(req, res) {
+    res.sendFile(path.join(__dirname, '/lines.html'));
+});
+
+
+app.get('/status', function(req, res) {
+    res.sendFile(path.join(__dirname, '/status.html'));
 });
 
 // handle static assets
 app.use(express.static(__dirname));
+
+
 
 // connect socket
 io.on('connection', function(socket) {
@@ -39,57 +67,29 @@ server.listen(9999, () => {
 
 net.createServer(function(sock) {
     console.log('CONNECTED DATA:',sock.remoteAddress,':',sock.remotePort);
+    last_timestamp = Date.now();
     sock.setEncoding("utf8"); //set data encoding (either 'ascii', 'utf8', or 'base64')
     sock.on('data', function(data) {
         // console.log(data);
-        buffer += data;
+        buffer += data; // for packet reconstitution
         // console.log(buffer);
         // isolate a valid json
         var json = buffer.match(/^\{.*\}/);
         if(json && json.length > 0) {
+            var now = Date.now();
+            // add the data to databuffer in csv format
+            databuffer+=json+"\n"
+            // print the rate of data without skipping lines
+            // console.log("rate is: "+ (now - last_timestamp)+"ms\r");
             buffer = "";
             // console.log(json);
             try {
                 const parsed_data = JSON.parse(json[0])
+                parsed_data["time"] = now;
+                last_timestamp = now;
                 // console.log(parsed_data)
                 // check if a socketio is open
-                    if ("A" in parsed_data) {
-                        //send the value to all clients
-                        io.emit('A', parseFloat(parsed_data["A"]));
-                    }
-                    if ("M" in parsed_data) {
-                        io.emit('M', parseFloat(parsed_data["M"]));
-                    }
-                    if ("B" in parsed_data) {
-                        io.emit('B', parseFloat(parsed_data["B"]));
-                    }
-                    if ("O" in parsed_data) {
-                        io.emit('O', parseFloat(parsed_data["O"]));
-                    }
-                    if ("U" in parsed_data) {
-                        io.emit('U', parseFloat(parsed_data["U"]));
-                    }
-                    if ("T" in parsed_data) {
-                        io.emit('T', parseFloat(parsed_data["T"]));
-                    }
-                    if ("R" in parsed_data) {
-                        io.emit('R', parseFloat(parsed_data["R"]));
-                    }
-                    if ("V" in parsed_data) {
-                        io.emit('V', parseFloat(parsed_data["V"]));
-                    }
-                    if ("D" in parsed_data) {
-                        io.emit('D', parseFloat(parsed_data["D"]));
-                    }
-                    if ("P" in parsed_data) {
-                        io.emit('P', parseFloat(parsed_data["P"]));
-                    }
-                    if ("C" in parsed_data) {
-                        io.emit('C', parseFloat(parsed_data["C"]));
-                    }
-                    if ("L" in parsed_data) {
-                        io.emit('L', parseFloat(parsed_data["L"]));
-                    }
+                io.emit('data', parsed_data);
             } catch(err) {
                 console.error(err)
                 }
