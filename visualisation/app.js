@@ -30,6 +30,8 @@ const interval = setInterval(function() {
     // if last message received is over 30s old
     if( ((Date.now() - last_timestamp) >30000) && (databuffer.length>0)){
         var title = "DATA/"+ new Date().toISOString() +".csv";
+        title=title.replace(/:/g,"_");
+        // title=title.replace(/./g,"_");
         fs.writeFile(title,databuffer,function (err,data) {
             if (err) {
               return console.log(err);

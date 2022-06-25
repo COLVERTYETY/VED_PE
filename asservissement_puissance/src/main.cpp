@@ -105,10 +105,10 @@ void setup() {
     pinMode(A7,INPUT);
     
     //Initialise la valeur du capteur de courant
-    for(int i=0;i<20;i++){
-      int val = analogRead(A6);
-      Amp0=(val<Amp0)?val:Amp0;
-    }
+    // for(int i=0;i<20;i++){
+    //   int val = analogRead(A6);
+    //   Amp0=(val<Amp0)?val:Amp0;
+    // }
     Serial.println();
     Serial.print(" amp0 is: ");
     Serial.println(Amp0);
@@ -228,7 +228,7 @@ void loop() {
   Serial.print(",\"P\":");
   Serial.print(puissanceMoteur);
   Serial.print(",\"L\":");
-  Serial.print(potVal);
+  Serial.print(potVal/1023.0*255.0);
   Serial.print("}");
   Serial.println();
   }
