@@ -34,20 +34,19 @@ socket.on('B', function (data) {
 });
 
 
-function changeColor(data) {
+function changeColor(data, aff) {
     switch(true) {
         case(data < 15):
-            data.style.color = "green";
+            aff.style.BackgroundColor = "green";
             break;
         case(data < 25):
-            data.style.color = "blue";
+            aff.style.BackgroundColor = "blue";
             break;
         case(data < 35):
-            data.style.color = "orangered";
+            aff.style.BackgroundColor = "darkorange";
             break;
         default:
-            data.style.color = "white";
-            data.style.backgroundColor = "red";
+            aff.style.BackgroundColor = "red";
             break;
     }
 };

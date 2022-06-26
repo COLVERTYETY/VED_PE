@@ -9,35 +9,46 @@
 
 <body>
   <div class="mygrid">
-    <div style="grid-column: 1 / span 2;" class="ligne">
+    <div>
+      <p style="font-size: 28px; background-color: black; border: 2px solid #777; border-radius: 50px;width: max-content;margin-left: 25px;padding: 14px;">
+        100%
+      </p>
+    </div>
+    <div></div>
+    <div style="grid-column: 3 / span 2;">
       <a class="description">Vitesse</a>
       <br>
-      <span id="aff_vitesse"></span>
       <p><a id="vitesse">0</a> km/h</p>
     </div>
-    <div class="pair">
-      <a class="description">Puissance</a>
-      <br>
-      <span id="aff_puissance"></span>
-      <p><a id="puissance">0</a> W</p>
-    </div>
-    <div class="impair">
+    <div></div>
+    <div></div>
+    <div>
       <a class="description">Température Moteur</a>
       <br>
-      <span id="aff_moteur"></span>
-      <p><a id="temp_moteur">0</a> °C</p>
+      <div id="aff_moteur">
+        <p><a id="temp_moteur">0</a> °C</p>
+      </div>
     </div>
-    <div class="impair">
+    <div>
       <a class="description">Température Batterie</a>
       <br>
-      <span id="aff_batterie"></span>
-      <p><a id="temp_batterie">0</a> °C</p>
+      <div id="aff_batterie">
+        <p><a id="temp_batterie">0</a> °C</p>
+      </div>
     </div>
-    <div class="pair">
+    <div>
       <a class="description">Température Mosfet</a>
       <br>
-      <span id="aff_mosfet"></span>
-      <p><a id="temp_mosfet">0</a> °C</p>
+      <div id="aff_mosfet">
+        <p><a id="temp_mosfet">0</a> °C</p>
+      </div>
+    </div>
+    <div></div>
+    <div style="grid-column: 5 / span 2;">
+      <a class="description">Puissance</a>
+      <div id="aff_puissance">
+        <p><a id="puissance">0</a> °C</p>
+      </div>
     </div>
   </div>
   <script src="assets/js/index.js"></script>
