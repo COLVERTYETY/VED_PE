@@ -9,3 +9,56 @@
 .wide {
     grid-column-end: span 2;
 }
+
+.pair {
+    background-color: rgb(245, 230, 230);
+}
+
+.impair {
+    background-color: rgb(245, 240, 240);
+}
+
+.ligne {
+    border-bottom: 4px solid #DE1F32;
+}
+
+p {
+    font-size: 7vh;
+}
+
+#vitesse,
+#puissance,
+#temp_moteur,
+#temp_batterie,
+#temp_mosfet {
+    font-size: 10vh;
+}
+
+#aff_vitesse,
+#aff_puissance,
+#aff_moteur,
+#aff_batterie,
+#aff_mosfet {
+    float: left;
+    height: 4px;
+    min-width: .5%;
+    max-width: 100%;
+    border-bottom: 4px solid black;
+}
+
+.description {
+    position: static;
+    margin-left: 4px;
+    font-size: 17px;
+    color: #DE1F32;
+    font-style: italic;
+}
+
+p {
+    text-align: center;
+}
+
+a,
+p {
+    font-family: 'Verdana', sans-serif;
+}
