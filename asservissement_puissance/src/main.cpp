@@ -86,28 +86,28 @@ void setup() {
   //mySerial.begin (9600);
 
   //Initialise les pins anologique
-    pinMode(A0,INPUT);
-    pinMode(A1,INPUT);
-    pinMode(A2,INPUT);
-    pinMode(A3,INPUT);
-    pinMode(A4,INPUT);
-    pinMode(A5,INPUT);
-    pinMode(A6,INPUT);
-    pinMode(A7,INPUT);
-    
-    //FOR THE PWM :
-    pinMode(9, OUTPUT);
-    analogWrite(9,0);
-    TCCR1B = TCCR1B & B11111000 | B00000001; // for PWM frequency of 3921.16 Hz
-    
-    //analogWrite(9,0);
-    //InitTimersSafe();
-    //SetPinFrequencySafe(9, 17200);
-    //pwmWrite (9, 0);
-    
-    //Capteur de vitesse
-    pinMode (2, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(2),interruption,RISING);
+  pinMode(A0,INPUT);
+  pinMode(A1,INPUT);
+  pinMode(A2,INPUT);
+  pinMode(A3,INPUT);
+  pinMode(A4,INPUT);
+  pinMode(A5,INPUT);
+  pinMode(A6,INPUT);
+  pinMode(A7,INPUT);
+  
+  //FOR THE PWM :
+  pinMode(9, OUTPUT);
+  analogWrite(9,0);
+  TCCR1B = TCCR1B & B11111000 | B00000001; // for PWM frequency of 3921.16 Hz
+  
+  //analogWrite(9,0);
+  //InitTimersSafe();
+  //SetPinFrequencySafe(9, 17200);
+  //pwmWrite (9, 0);
+  
+  //Capteur de vitesse
+  pinMode (2, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(2),interruption,RISING);
 
     
 }
@@ -119,7 +119,7 @@ void loop() {
   float vcc = readVcc()/1000.0;
   
   //Porcentage du potentiomètre (entre 0 et 1)
-  potVal = analogRead(A4)/1023.0;
+  potVal = analogRead(A4)/1024.0;
   // potVal = 2.45*potVal*potVal*potVal -2.12*potVal*potVal + 0.67*potVal;
 
   

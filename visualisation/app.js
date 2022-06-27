@@ -111,22 +111,26 @@ net.createServer(function(sock) {
     sock.on('data', function(data) {
         // console.log(data);
         buffer += data; // for packet reconstitution
-        if (buffer.length > 100) {
-            console.log("DATA RECEIVED: "+buffer);
-        }
         // console.log(buffer);
         // isolate a valid json
-        var json = buffer.match(/^\{.*\}/);
+        var json = buffer.match(/\{.*\}/);
+        // var json = buffer.match(/\{*\}/);
+        if (buffer.length > 200) {
+            console.log("buffer is : "+buffer);
+        }
         if(json && json.length > 0) {
             var now = Date.now();
             // add the data to databuffer in csv format
+            // json = json.replace(/\n/g,"").replace(/\r/g,"");
+            // console.log("json is: "+json);
             databuffer+=json+"\n"
             // print the rate of data without skipping lines
             // console.log("rate is: "+ (now - last_timestamp)+"ms\r");
             buffer = "";
             // console.log(json);
             try {
-                const parsed_data = JSON.parse(json[0])
+                // console.log(json)
+                const parsed_data = JSON.parse(json)
                 parsed_data["time"] = now;
                 last_timestamp = now;
                 // console.log(parsed_data)
