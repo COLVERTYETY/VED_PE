@@ -1,6 +1,8 @@
 import serial
 import matplotlib.pyplot as plt
 import numpy as np
+import json
+import regex
 
 done = False
 
@@ -35,10 +37,11 @@ Vmoteur = []
 puissance = []
 consigne = []
 dutycycle = [] 
+potard = []
 
 
 trick = 10
-
+buffer = ""
 
 while(not done):
 
@@ -52,34 +55,27 @@ while(not done):
         try:
             # Print the contents of the serial data
             raw = serialString.decode('utf-8')
-
-            data = raw.split("/")
-            for i in data:
-                d = i.split(":")
-                match d[0]:
-                    case "A":
-                        Courant.append(float(d[1]))
-                    case "M":
-                        Tmoteur.append(float(d[1]))
-                    case "B":
-                        Tbatterie.append(float(d[1]))
-                    case "O":
-                        Tmosfet.append(float(d[1]))
-                    case "U":
-                        Vbatterie.append(float(d[1]))
-                    case "T":
-                        Vmoteur.append(float(d[1]))
-                    case "R":
-                        rpm.append(float(d[1]))
-                        # print(rpm[-1])
-                    case "V":
-                        vitesse.append(float(d[1]))
-                    case "D":
-                        dutycycle.append(float(d[1]))
-                    case "C":
-                        consigne.append(float(d[1]))
-                    case "P":
-                        puissance.append(float(d[1]))
+            buffer+=raw
+            # check for json in the buffer
+            if(regex.search(r'\{.*\}', buffer)):
+                myjson = regex.search(r'\{.*\}', buffer).group(0)
+                buffer = buffer.replace(myjson, "")
+                print(myjson)
+                # parse the json
+                data = json.loads(myjson)
+                # print(data)
+                Tmoteur.append(data['M'])
+                Tbatterie.append(data['B'])
+                Tmosfet.append(data['O'])
+                Courant.append(data['A'])
+                vitesse.append(data['V'])
+                rpm.append(data['R'])
+                Vbatterie.append(data['U'])
+                Vmoteur.append(data['T'])
+                puissance.append(data['P'])
+                consigne.append(data['C'])
+                dutycycle.append(data['D'])
+                potard.append(data['L'])
             if len(Tmoteur) > datasize:
                 Tmoteur.pop(0)
             if len(Tbatterie)>datasize:
@@ -102,9 +98,10 @@ while(not done):
                 consigne.pop(0)
             if len(puissance)>datasize:
                 puissance.pop(0)
-
+            if len(potard)>datasize:
+                potard.pop(0)
             
-            if trick >20:
+            if trick >10:
                 trick = 0
                 # Clear the current figure
                 plt.clf()
@@ -147,11 +144,19 @@ while(not done):
                 plt.subplot(3,2,5)
                 plt.plot(consigne, 'r')
                 plt.plot(puissance, 'b')
-                plt.plot(np.array(consigne)*np.array(dutycycle)/255, 'g')
                 plt.ylabel('Consigne')
                 plt.xlabel('Time (s)')
                 plt.title('Consigne')
-                plt.legend(['Consigne', 'Puissance', 'DutyCycle'])
+                plt.legend(['Consigne', 'Puissance'])
+                plt.grid(True)
+
+                plt.subplot(3,2,6)
+                plt.plot(dutycycle, 'r')
+                plt.plot(potard, 'b')
+                plt.ylabel('Duty Cycle')
+                plt.xlabel('Time (s)')
+                plt.title('Duty Cycle')
+                plt.legend(['Duty Cycle', 'Potard'])
                 plt.grid(True)
 
                 plt.draw()

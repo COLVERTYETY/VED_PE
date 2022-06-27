@@ -111,6 +111,9 @@ net.createServer(function(sock) {
     sock.on('data', function(data) {
         // console.log(data);
         buffer += data; // for packet reconstitution
+        if (buffer.length > 100) {
+            console.log("DATA RECEIVED: "+buffer);
+        }
         // console.log(buffer);
         // isolate a valid json
         var json = buffer.match(/^\{.*\}/);
