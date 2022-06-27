@@ -50,7 +50,7 @@ p {
     min-width: 3%;
     border-radius: 25px;
     background-color: green;
-    transition: all .05s;
+    transition: all .1s;
 }
 
 #aff_moteur,
@@ -63,7 +63,7 @@ p {
     margin-left: 1vw;
     width: calc((100vw / 6) - 2vw);
     background-color: green;
-    transition: all .05s;
+    transition: all .1s;
 }
 
 .description {
