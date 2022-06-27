@@ -24,13 +24,13 @@ socket.on('connection', function () {
 socket.on('M', function (data) {
     temp_moteur = chartTemp.data.datasets[0][-1];
     changeColor(temp_moteur);
-    aff_moteur.style.width = str(temp_moteur * 3.33) + '%';
+    aff_moteur.style.height = str(temp_moteur * 0.75) + 'vh';
 });
 
 socket.on('B', function (data) {
     temp_batterie = chartTemp.data.datasets[1][-1];
     changeColor(temp_batterie);
-    aff_batterie.style.width = str(temp_batterie * 3.33) + '%';
+    aff_batterie.style.height = str(temp_batterie * 0.75) + 'vh';
 });
 
 
