@@ -1,6 +1,10 @@
 
 var socket = io();
 
+// calc bat %
+var Vmax=50;
+var Vmin=47;
+
 socket.on('connection', function () {
     console.log('connected');
 });
@@ -10,6 +14,8 @@ socket.on("data", function (data) {
 
     var max_puissance = 200;
     var max_temp = 80;
+
+    document.getElementById('pourcentage') = 100.0*(data["U"]-Vmin)/(Vmax-Vmin);
 
     document.getElementById('puissance').textContent = data["P"];;
     document.getElementById('aff_puissance').style.height = data["P"] * (50/max_puissance) + 'vh';
