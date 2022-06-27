@@ -187,7 +187,6 @@ socket.on('disconnect', function() {
     console.log('disconnected');
 });
 
-
 socket.on("data", function(data) {
     if(Date.now()-data["time"]  > 500) {
         // console.log("data too old");
