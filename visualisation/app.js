@@ -14,6 +14,7 @@ const http = require('http');
 const server = http.createServer(app);
 const {Server} = require('socket.io');
 const { Console } = require('console');
+
 const parse = require('node-html-parser').parse;
 const io = new Server(server);
 
@@ -24,16 +25,20 @@ var last_timestamp = 0;
 
 // fils system
 const fs = require('fs'); 
+
 const { urlToHttpOptions } = require('url');
+
 var databuffer="";
 
 // databackup timer 60s
 const interval = setInterval(function() {
     // if last message received is over 30s old
     if( ((Date.now() - last_timestamp) >30000) && (databuffer.length>0)){
+
         var title = __dirname+"/DATA/"+ new Date().toISOString().replace(".","") +".csv";
         title=title.replace(/:/g,"_");
         // title=title.replace(/./g,"_");
+
         fs.writeFile(title,databuffer,function (err,data) {
             if (err) {
               return console.log(err);
@@ -49,9 +54,12 @@ app.get('/lines', function(req, res) {
     res.sendFile(path.join(__dirname, '/lines.html'));
 });
 
-
 app.get('/status', function(req, res) {
     res.sendFile(path.join(__dirname, '/status.html'));
+});
+
+app.get('/driver', function(req, res) {
+    res.sendFile(path.join(__dirname, '/driver.html'));
 });
 
 app.get('/download', function(req, res) {
@@ -121,16 +129,20 @@ net.createServer(function(sock) {
         if(json && json.length > 0) {
             var now = Date.now();
             // add the data to databuffer in csv format
+
             // json = json.replace(/\n/g,"").replace(/\r/g,"");
             // console.log("json is: "+json);
+
             databuffer+=json+"\n"
             // print the rate of data without skipping lines
             // console.log("rate is: "+ (now - last_timestamp)+"ms\r");
             buffer = "";
             // console.log(json);
             try {
+
                 // console.log(json)
                 const parsed_data = JSON.parse(json)
+
                 parsed_data["time"] = now;
                 last_timestamp = now;
                 // console.log(parsed_data)

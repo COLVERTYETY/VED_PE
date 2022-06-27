@@ -32,6 +32,7 @@ var chartBat= new Chart(document.getElementById("chartBat"), {
     }
 });
 
+
 var chartRate= new Chart(document.getElementById("chartRate"), {
     type: 'bar',
     data: {
@@ -76,6 +77,7 @@ function TempColor(T){
     }
     const r = normed*255;
     const b = (1-normed)*255;
+
     return ['rgba('+r+', 20,'+b+', 0.9)','rgba('+r+', 20,'+b+', 1)'];
 }
 
@@ -136,7 +138,9 @@ socket.on('connection', function() {
 
 socket.on("data", function(data) {
     freq = 1/((Date.now() - last_timestamp)/1000) // en Hz
+
     last_timestamp = Date.now();
+
     if(Date.now()-data["time"]  > 500) {
         // console.log("data too old");
         return;
@@ -146,6 +150,7 @@ socket.on("data", function(data) {
         var bat_val = 100.0*(data["U"]-Vmin)/(Vmax-Vmin);
         chartBat.data.datasets[0].data[0]=bat_val;
         chartBat.data.labels[0]=data["U"]+" V";
+
         chartBat.data.datasets[0].backgroundColor= 'rgba(' +(255*(1-(bat_val/100)))+','+(255*(bat_val/100)) +',20, 0.9)';
         chartBat.data.datasets[0].borderColor=     'rgba(' +(255*(1-(bat_val/100)))+','+(255*(bat_val/100)) +',20, 1)';
         chartBat.update();
@@ -175,6 +180,5 @@ socket.on("data", function(data) {
         chartTemp.data.datasets[2].borderColor= colors[1];
         chartTemp.data.labels[2]=data["O"]+" °C";
         chartTemp.update();
-
     }
 });

@@ -1,7 +1,7 @@
 .mygrid {
     display: grid;
-    grid-template-columns: repeat(2, 50%);
-    grid-template-rows: repeat(3, 33vh);
+    grid-template-columns: repeat(2, calc(50%));
+    grid-template-rows: repeat(3, calc(100vh / 3));
     grid-column-gap: 0px;
     grid-row-gap: 0px;
 }
@@ -10,13 +10,16 @@
     display: grid;
     grid-template-columns: repeat(2, 50%);
     grid-template-rows: repeat(2, 49vh);
+
     grid-column-gap: 0px;
     grid-row-gap: 0px;
     }
 
+
 .wide {
     grid-column-end: span 2;
 }
+
 
 .customButton {
     background-color: #4CAF50; /* Green */
@@ -30,3 +33,4 @@
     margin: 4px 2px;
     cursor: pointer;
 }
+
