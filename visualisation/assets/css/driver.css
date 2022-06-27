@@ -39,7 +39,22 @@ p {
     font-size: 50px;
 }
 
-#aff_puissance,
+#rpm {
+    font-size: 30px;
+}
+
+#aff_puissance {
+    position: absolute;
+    z-index: -1;
+    bottom: 4vh;
+    height: 17px;
+    margin-left: 1vw;
+    min-width: 1vw;
+    border-radius: 25px;
+    background-color: green;
+    transition: all .5s;
+}
+
 #aff_moteur,
 #aff_batterie,
 #aff_mosfet {
@@ -50,7 +65,7 @@ p {
     margin-left: 1vw;
     width: calc((100vw / 6) - 2vw);
     background-color: green;
-    transition: all .05s;
+    transition: all .5s;
 }
 
 .description {
