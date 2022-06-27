@@ -13,7 +13,7 @@ print("connected")
 
 while True:
     #sleep for 1 s
-    time.sleep(1)
+    time.sleep(0.04)
     #send hello world
     # create jsondata with random data
     jsondata = '{"A":' + str(random.randint(0,100)) + ',"M":' + str(random.randint(20,100)) + ',"B":' + str(random.randint(20,60)) + ',"O":' + str(random.randint(60,100)) + ',"U":' + str(random.randint(47,50)) + ',"T":' + str(random.randint(0,100)) + ',"R":' + str(random.randint(500,6500)) + ',"V":' + str(random.randint(0,40)) + ',"D":' + str(random.randint(0,100)) + ',"C":' + str(random.randint(0,100)) + ',"P":' + str(random.randint(0,200)) + '}'
