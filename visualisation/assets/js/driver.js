@@ -6,7 +6,7 @@ socket.on('connection', function () {
 });
 
 socket.on("data", function (data) {
-    document.getElementById('vitesse').textContent = data["V"];
+    document.getElementById('vitesse').textContent = data["R"];
 
     document.getElementById('puissance').textContent = data["P"];;
     document.getElementById('aff_puissance').style.height = data["P"] * 0.75 + 'vh';
