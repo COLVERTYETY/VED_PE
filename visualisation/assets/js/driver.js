@@ -16,7 +16,7 @@ socket.on("data", function (data) {
     document.getElementById('pourcentage').textContent = Math.trunc(100.0*(data["U"]- 47)/3) + '%';
 
     document.getElementById('puissance').textContent = data["P"];;
-    document.getElementById('aff_puissance').style.width = data["P"] * (33/max_puissance) + 'vw';
+    document.getElementById('aff_puissance').style.width = data["P"] * (100/max_puissance) + '%';
 
     document.getElementById('temp_moteur').textContent = data["M"];;
     document.getElementById('aff_moteur').style.height = data["M"] * (50/max_temp) + 'vh';

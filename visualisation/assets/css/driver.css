@@ -44,15 +44,13 @@ p {
 }
 
 #aff_puissance {
-    position: absolute;
     z-index: -1;
-    bottom: 4vh;
     height: 17px;
-    margin-left: 1vw;
-    min-width: 1vw;
+    width: 2%;
+    min-width: 3%;
     border-radius: 25px;
     background-color: green;
-    transition: all .5s;
+    transition: all .05s;
 }
 
 #aff_moteur,
@@ -65,11 +63,12 @@ p {
     margin-left: 1vw;
     width: calc((100vw / 6) - 2vw);
     background-color: green;
-    transition: all .5s;
+    transition: all .05s;
 }
 
 .description {
     font-size: 14px;
+    background-color: rgb(22, 22, 22, .5);
     color: #777;
     height: 9vh;
     margin-left: auto;
