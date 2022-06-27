@@ -1,8 +1,4 @@
 #include <Arduino.h>
-
-//FOR SD CARD :
-#include <SPI.h>
-#include <SD.h>
 /* CODE PROTOTYPE - CARTE DATALOGGER*/
 // Par Nicolas Stas
 /*
@@ -43,8 +39,6 @@
 */
 // for platformio
 long readVcc();
-void EcritureCarteSD(File actualfichierSD);
-void InitialisationEcriture(File fichierSD);
 void interruption();
 // PID
 float erreur;
@@ -85,10 +79,7 @@ uint8_t cpt = 0;
 float potVal;
 float Amp0 = 102.0;
 int sendcount=0;
-int sendrate=4; // 4*50 = 200ms
-
-File fichierSD;
-String nomFichier = "";
+int sendrate=2; // 2*50 = 100ms
 
 void setup() {
   Serial.begin (115200);
@@ -104,31 +95,6 @@ void setup() {
     pinMode(A6,INPUT);
     pinMode(A7,INPUT);
     
-    //Initialise la valeur du capteur de courant
-    // for(int i=0;i<20;i++){
-    //   int val = analogRead(A6);
-    //   Amp0=(val<Amp0)?val:Amp0;
-    // }
-    Serial.println();
-    Serial.print(" amp0 is: ");
-    Serial.println(Amp0);
-
-  
-  // SD CARD
-  /*At first we must check if the SD card exists. We use function SD.exists(pinSS), where pinSS is 10 for arduino uno and 53 for arduino mega*/
-  if (!SD.begin(10)) {
-    Serial.println(F("Initialisation impossible !")); 
-    return;
-  }
-  Serial.println(F("Initialisation OK"));
-  int  index = 1;
-  while (SD.exists("interu" + String(index) + ".csv")) {
-    index++;
-  }
-  nomFichier = "interu" + String(index) + ".csv";
-  Serial.println(nomFichier);
-  InitialisationEcriture(fichierSD);
-  
     //FOR THE PWM :
     pinMode(9, OUTPUT);
     analogWrite(9,0);
@@ -148,8 +114,6 @@ void setup() {
 
 
 void loop() {
-  
-  EcritureCarteSD(fichierSD);
 
   //Calcul de la tension batterie
   float vcc = readVcc()/1000.0;
@@ -162,31 +126,33 @@ void loop() {
   //On donne une consigne au moteur qui dépend de la puissance désirée
   float target = puissanceconsigne*potVal;
   tensionbatterie = analogRead(A0)/1024.0*vcc*10.0;
+  tensionmoteur = analogRead(A1)/1024.0*vcc*10.0;
   courantMoteur = ((analogRead(A6)-Amp0)*(vcc/1024.0))/0.08;
 
-  puissanceMoteur = courantMoteur*tensionbatterie*dutyCycle/255.0;
+  puissanceMoteur = courantMoteur*tensionmoteur;// la veritable puissance du moteur en watt
   
+
   //Calcul de la vitesse à partir du courant passant par le moteur
-  float VBEMF = ((dutyCycle/255.0)*tensionbatterie) - (0.32*Rmotor) ;//https://www.precisionmicrodrives.com/ab-021
+  float VBEMF = (tensionmoteur) - (0.32*Rmotor) ;//https://www.precisionmicrodrives.com/ab-021
   rpm = VBEMF*omega;
 
 
   //Calcul des températures
-  temperaturemoteur = ((float)(analogRead(A7))/1024*5 -0.5)*100; 
-  temperaturebatterie = ((float)(analogRead(A2))/1024*5 -0.5)*100; 
-  temperaturemosfet = ((float)(analogRead(A3))/1024*5 -0.5)*100; 
+  temperaturemoteur = ((float)(analogRead(A7))/1024.0*vcc -0.5)*100.0; 
+  temperaturebatterie = ((float)(analogRead(A2))/1024.0*vcc -0.5)*100.0; 
+  temperaturemosfet = ((float)(analogRead(A3))/1024.0*vcc -0.5)*100;0; 
 
 
   //Asservissement en puissance
   if(potVal>0.02) {
-    erreur = target - courantMoteur*tensionbatterie*dutyCycle/255.0;//erreur = consigne - puissance = consigne - (courant * tensionMoteur)
+    erreur = target - puissanceMoteur;//erreur = consigne - puissance = consigne - (courant * tensionMoteur)
   }else{
-    erreur = 0.0-courantMoteur*tensionbatterie*10.0*dutyCycle/255.0;
+    erreur = 0.0-puissanceMoteur;
     //analogWrite(9,0);
   }
 
   //Erreur intégrale
-  sommeErreur +=(erreur>3.0)?3.0:erreur;
+  sommeErreur +=(erreur>10.0)?10.0:erreur;
   if(sommeErreur>(255.0/ki)) sommeErreur = 255.0/ki;
   if(sommeErreur<0)sommeErreur=0;
 
@@ -205,32 +171,32 @@ void loop() {
     // format the message as json
     // String json = "{\"A\":" + String(courantMoteur) + ",\"R\":" + String(rpm) + ",\"V\":" + String(vitesse) + ",\"U\":" + String(tensionbatterie) + ",\"T\":" + String(analogRead(A1)/1024.0*vcc*10.0) + ",\"M\":" + String(temperaturemoteur) + ",\"B\":" + String(temperaturebatterie) + ",\"O\":" + String(temperaturemosfet) + ",\"D\":" + String(dutyCycle) + ",\"C\":" + String(target) + ",\"P\":" + String(puissanceMoteur) + "}";
     //format message in json with only the courant
-  Serial.print("{\"A\":");
-  Serial.print(courantMoteur);
-  Serial.print(",\"R\":");
-  Serial.print(rpm);
-  Serial.print(",\"V\":");
-  Serial.print(vitesse);
-  Serial.print(",\"U\":");
-  Serial.print(tensionbatterie);
-  Serial.print(",\"T\":");
-  Serial.print(analogRead(A1)/1024.0*vcc*10.0);
-  Serial.print(",\"M\":");
-  Serial.print(temperaturemoteur);
-  Serial.print(",\"B\":");
-  Serial.print(temperaturebatterie);
-  Serial.print(",\"O\":");
-  Serial.print(temperaturemosfet);
-  Serial.print(",\"D\":");
-  Serial.print(dutyCycle);
-  Serial.print(",\"C\":");
-  Serial.print(target);
-  Serial.print(",\"P\":");
-  Serial.print(puissanceMoteur);
-  Serial.print(",\"L\":");
-  Serial.print(potVal/1023.0*255.0);
-  Serial.print("}");
-  Serial.println();
+    Serial.print("{\"A\":");
+    Serial.print(courantMoteur);
+    Serial.print(",\"R\":");
+    Serial.print(rpm);
+    Serial.print(",\"V\":");
+    Serial.print(vitesse);
+    Serial.print(",\"U\":");
+    Serial.print(tensionbatterie);
+    Serial.print(",\"T\":");
+    Serial.print(tensionmoteur);
+    Serial.print(",\"M\":");
+    Serial.print(temperaturemoteur);
+    Serial.print(",\"B\":");
+    Serial.print(temperaturebatterie);
+    Serial.print(",\"O\":");
+    Serial.print(temperaturemosfet);
+    Serial.print(",\"D\":");
+    Serial.print(dutyCycle);
+    Serial.print(",\"C\":");
+    Serial.print(target);
+    Serial.print(",\"P\":");
+    Serial.print(puissanceMoteur);
+    Serial.print(",\"L\":");
+    Serial.print(potVal/1023.0*255.0);
+    Serial.print("}");
+    Serial.println();
   }
   delay(50);
 }
@@ -243,89 +209,6 @@ void interruption(){
     vitesse=1.0/(period);// ms -> min rpm
   }
   //Serial.println(vitesse);
-}
-
-void InitialisationEcriture (File actualfichierSD)
-{
-  fichierSD = SD.open(nomFichier, FILE_WRITE);
-  if (fichierSD) {
-    fichierSD.print ("temps");
-    fichierSD.print(";");
-    fichierSD.print ("puissance");
-    fichierSD.print(";");
-    fichierSD.print ("tension batterie");
-    fichierSD.print(";");
-    fichierSD.print ("tension moteur");
-    fichierSD.print(";");
-    fichierSD.print("courant moteur (bit)");
-    fichierSD.print(";");
-    fichierSD.print ("temperature batterie");
-    fichierSD.print(";");
-    fichierSD.print ("temperature moteur");
-    fichierSD.print(";");
-    fichierSD.print ("temperature mosfet");
-    fichierSD.print(";");
-    fichierSD.print("period");
-    fichierSD.print(";");
-    fichierSD.print("rapport cyclique");
-    fichierSD.print(";");
-    //fichierSD.print("pourcentage batterie");
-    //fichierSD.print(";");
-    fichierSD.print("\n");
-    fichierSD.print(";;;;");
-    fichierSD.print(Amp0);
-    fichierSD.print("(initial)");
-    fichierSD.print("\n");
-    fichierSD.close();
-  }
-}
-
-void EcritureCarteSD (File actualfichierSD)
-{
-  /*
-  tensionbatterie = analogRead(A0);
-  tensionmoteur = analogRead(A1);
-  temperaturebatterie = analogRead(A2);
-  temperaturemosfet = analogRead(A3);
-  courantMoteur = analogRead(A6);
-  temperaturemoteur = analogRead(A7);
-  float periode = pulseIn (2, HIGH, 1000000) ;      
-  periode = 0.93*(3.6*1000000*perimetrepardeux / (0.94*periode));
-  Serial.println(periode);
-  */ 
-  actualtime = millis();
-  //mySerial.print(String(actualtime)+";"+String(tensionbatterie)+";"+String(tensionmoteur)+";"+String(temperaturebatterie)+";"+String(temperaturemosfet)+";"+String(courantmoteur)+";"+String(temperaturemoteur)+";"+String(vitesse)+";"+String(currentdutyCycle));
-  //mySerial.println();
-  
-  // SENDING DATA TO SD CARD
-  actualfichierSD = SD.open(nomFichier, FILE_WRITE);
-  if (actualfichierSD) {
-    //Serial.println(F("Ecriture en cours"));
-    actualfichierSD.print(actualtime);
-    actualfichierSD.print(";");
-    actualfichierSD.print(puissanceMoteur);
-    actualfichierSD.print(";");
-    actualfichierSD.print(tensionbatterie);
-    actualfichierSD.print(";");
-    actualfichierSD.print(tensionmoteur);
-    actualfichierSD.print(";");
-    actualfichierSD.print(courantMoteur);
-    actualfichierSD.print(";");
-    actualfichierSD.print(temperaturebatterie);
-    actualfichierSD.print(";");
-    actualfichierSD.print (temperaturemoteur);
-    actualfichierSD.print(";");
-    actualfichierSD.print(temperaturemosfet );
-    actualfichierSD.print(";");
-    actualfichierSD.print(period);
-    actualfichierSD.print(";");
-    actualfichierSD.print(dutyCycle);
-    actualfichierSD.print(";");
-    //actualfichierSD.print(pourcentageBatterie);
-    //actualfichierSD.print(";");
-    actualfichierSD.print("\n");
-    actualfichierSD.close();
-   }
 }
 
 long readVcc() {
