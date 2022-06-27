@@ -3,19 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="assets/css/stufff.css" rel="stylesheet">
 </head>
 <body>
-  <div class ="smallgrid">
-    <div>
-      <canvas id="chartBat" ></canvas>
+    <div class ="smallgrid">
+        <div>
+            <canvas id="chartBat" ></canvas>
+        </div>
+        <div>
+            <canvas id="chartRate" ></canvas>
+        </div>
+        <div class="wide">
+            <canvas id="chartTemp" ></canvas>
+        </div>
     </div>
-    <div>
-      <canvas id="chartRate" ></canvas>
-    </div>
-    <div>
-      <canvas id="chartTemp" ></canvas>
-    </div>
-  </div>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src = "assets/js/status.js"></script>

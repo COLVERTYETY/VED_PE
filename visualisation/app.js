@@ -14,6 +14,7 @@ const http = require('http');
 const server = http.createServer(app);
 const {Server} = require('socket.io');
 const { Console } = require('console');
+const parse = require('node-html-parser').parse;
 const io = new Server(server);
 
 // data buffer
@@ -23,6 +24,7 @@ var last_timestamp = 0;
 
 // fils system
 const fs = require('fs'); 
+const { urlToHttpOptions } = require('url');
 var databuffer="";
 
 // databackup timer 60s
@@ -30,6 +32,8 @@ const interval = setInterval(function() {
     // if last message received is over 30s old
     if( ((Date.now() - last_timestamp) >30000) && (databuffer.length>0)){
         var title = "DATA/"+ new Date().toISOString() +".csv";
+        title=title.replace(/:/g,"_");
+        // title=title.replace(/./g,"_");
         fs.writeFile(title,databuffer,function (err,data) {
             if (err) {
               return console.log(err);
@@ -49,6 +53,41 @@ app.get('/lines', function(req, res) {
 app.get('/status', function(req, res) {
     res.sendFile(path.join(__dirname, '/status.html'));
 });
+
+app.get('/download', function(req, res) {
+    // find all files in the directory
+    var files = fs.readdirSync('./DATA');
+    var thehtml = fs.readFileSync('./download.html', 'utf8');
+    const root = parse(thehtml);
+    const body = root.querySelector('body');
+    // for every file create a button
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        // create a button
+        var button = parse('<button class="customButton">'+file+'</button>');
+        // console.log(button);
+        // add the button to the body
+        body.appendChild(button);
+    }
+    // res.sendFile(path.join(__dirname, '/download.html'));
+    res.send(root.toString());
+});
+
+app.post('/data', function(request, response){
+    var myJson = request.body;      // your JSON
+    console.log(myJson);
+    var file = myJson["file"]	// a value from your JSON
+    console.log(file);
+    // response.send(myJson);	 // echo the result back
+});
+
+// send the file to the client
+app.get('/DATA/:file', function(req, res) {
+    console.log("GETTING FILE: "+req.params.file);
+    var file = req.params.file;
+    res.sendFile(path.join(__dirname, '/DATA/'+file));
+}
+);
 
 // handle static assets
 app.use(express.static(__dirname));
