@@ -6,7 +6,9 @@ socket.on('connection', function () {
 });
 
 socket.on("data", function (data) {
-    document.getElementById('vitesse').textContent = Math.trunc(data["R"]);
+    document.getElementById('vitesse').textContent = Math.trunc(data["V"]);
+    document.getElementById('rpm').textContent = Math.trunc(data["R"]);
+    
 
     var max_puissance = 200;
     var max_temp = 80;
@@ -14,7 +16,7 @@ socket.on("data", function (data) {
     document.getElementById('pourcentage').textContent = Math.trunc(100.0*(data["U"]- 47)/3) + '%';
 
     document.getElementById('puissance').textContent = data["P"];;
-    document.getElementById('aff_puissance').style.height = data["P"] * (50/max_puissance) + 'vh';
+    document.getElementById('aff_puissance').style.width = data["P"] * (100/max_puissance) + '%';
 
     document.getElementById('temp_moteur').textContent = data["M"];;
     document.getElementById('aff_moteur').style.height = data["M"] * (50/max_temp) + 'vh';

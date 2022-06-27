@@ -49,6 +49,9 @@ const interval = setInterval(function() {
     }
   }, 60000);
 
+  app.get('', function(req, res) {
+    res.sendFile(path.join(__dirname, '/index.html'));
+});
 
 app.get('/lines', function(req, res) {
     res.sendFile(path.join(__dirname, '/lines.html'));
