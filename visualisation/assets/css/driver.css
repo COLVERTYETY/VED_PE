@@ -1,0 +1,74 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: #161616;
+}
+
+.mygrid {
+    display: grid;
+    grid-template-columns: repeat(6, calc(100% /6));
+    grid-template-rows: repeat(2, 50vh);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+
+.smallgrid {
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    grid-template-rows: repeat(2, 49vh);
+    grid-column-gap: 1vw;
+    grid-row-gap: 0px;
+}
+
+.wide {
+    grid-column-end: span 2;
+}
+
+p {
+    font-size: 17px;
+}
+
+#vitesse,
+#puissance,
+#temp_moteur,
+#temp_batterie,
+#temp_mosfet {
+    font-size: 50px;
+}
+
+#aff_puissance,
+#aff_moteur,
+#aff_batterie,
+#aff_mosfet {
+    position: absolute;
+    z-index: -1;
+    bottom: 0;
+    min-height: 10px;
+    margin-left: 1vw;
+    width: calc((100vw / 6) - 2vw);
+    background-color: green;
+    transition: all .05s;
+}
+
+.description {
+    font-size: 14px;
+    color: #777;
+    height: 9vh;
+    margin-left: auto;
+    margin-right: auto;
+    font-style: italic;
+}
+
+p {
+    text-align: center;
+}
+
+a,
+p {
+    font-family: 'Verdana', sans-serif;
+    user-select: none;
+    color: white;
+}

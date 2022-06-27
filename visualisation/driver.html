@@ -4,13 +4,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="assets/css/stufff.css" rel="stylesheet">
+  <link href="assets/css/driver.css" rel="stylesheet">
 </head>
 
 <body>
   <div class="mygrid">
     <div>
-      <p style="position: absolute; font-size: 14px; border-bottom: 2px solid #777; width: max-content; left: 0; top: -14px; padding: 14px; color: #777;">
+      <p id="pourcentage" style="position: absolute; font-size: 14px; border-bottom: 2px solid #777; width: max-content; left: 0; top: -14px; padding: 14px; color: #777;">
         100%
       </p>
       <p style="position: absolute; font-size: 14px; border-bottom: 2px solid #777; width: max-content; right: 0; top: -14px; padding: 14px; color: #777;">
@@ -23,7 +23,7 @@
       <div style="display: grid; grid-template-columns: repeat(4, 25%);">
         <div></div>
         <div style="text-align: right;">
-          <a id="vitesse">9</a>
+          <a id="vitesse">0</a>
         </div>
         <div>
           <p>km/h</p>
@@ -34,28 +34,29 @@
     <div></div>
     <div>
       <p class="description">Température Moteur</p>
-      <div id="aff_moteur" style="height: 18.75vh; background-color: darkorange;"></div>
-      <p><a id="temp_moteur">25</a> °C</p>
+      <div id="aff_moteur"></div>
+      <p><a id="temp_moteur">0</a> °C</p>
     </div>
     <div>
       <p class="description">Température Batterie</p>
-      <div id="aff_batterie" style="height: 22.5vh; background-color: red;"></div>
-      <p><a id="temp_batterie">30</a> °C</p>
+      <div id="aff_batterie"></div>
+      <p><a id="temp_batterie">0</a> °C</p>
     </div>
     <div>
       <p class="description">Température Mosfet</p>
-      <div id="aff_mosfet" style="height: 17.25vh; background-color: darkorange;"></div>
-      <p><a id="temp_mosfet">23</a> °C</p>
+      <div id="aff_mosfet"></div>
+      <p><a id="temp_mosfet">0</a> °C</p>
     </div>
     <div></div>
     <div>
       <p class="description">Puissance</p>
-      <div id="aff_puissance" style="height: 9.75vh; background-color: blue;"></div>
-      <p><a id="puissance">13</a> W</p>
+      <div id="aff_puissance"></div>
+      <p><a id="puissance">0</a> W</p>
     </div>
     <div></div>
   </div>
-  <script src="assets/js/index.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="assets/js/driver.js"></script>
 </body>
 
 </html>

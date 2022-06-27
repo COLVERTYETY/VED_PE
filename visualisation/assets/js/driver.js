@@ -1,52 +1,47 @@
 
 var socket = io();
 
-var vitesse = document.getElementById('vitesse');
-var aff_vitesse = document.getElementById('aff_vitesse');
-
-var puissance = document.getElementById('puissance');
-var aff_puissance = document.getElementById('aff_puissance');
-
-var temp_moteur = document.getElementById('temp_moteur');
-var aff_moteur = document.getElementById('aff_moteur');
-
-var temp_batterie = document.getElementById('temp_batterie');
-var aff_batterie = document.getElementById('aff_batterie');
-
-var temp_mosfet = document.getElementById('temp_mosfet');
-var aff_mosfet = document.getElementById('aff_mosfet');
-
-
 socket.on('connection', function () {
     console.log('connected');
 });
 
-socket.on('M', function (data) {
-    temp_moteur = chartTemp.data.datasets[0][-1];
-    changeColor(temp_moteur);
-    aff_moteur.style.height = str(temp_moteur * 0.75) + 'vh';
+socket.on("data", function (data) {
+    document.getElementById('vitesse').textContent = data["V"];
+
+    document.getElementById('puissance').textContent = data["P"];;
+    document.getElementById('aff_puissance').style.height = data["P"] * 0.75 + 'vh';
+
+    document.getElementById('temp_moteur').textContent = data["M"];;
+    document.getElementById('aff_moteur').style.height = data["M"] * 0.5 + 'vh';
+
+    document.getElementById('temp_batterie').textContent = data["B"];;
+    document.getElementById('aff_batterie').style.height = data["B"] * 0.5 + 'vh';
+
+    document.getElementById('temp_mosfet').textContent = data["O"];;
+    document.getElementById('aff_mosfet').style.height = data["O"] * 0.5 + 'vh';
+
+    document.getElementById('aff_moteur').style.backgroundColor = changeColor(data["M"]);
+    document.getElementById('aff_batterie').style.backgroundColor = changeColor(data["B"]);
+    document.getElementById('aff_mosfet').style.backgroundColor = changeColor(data["O"]);
+    document.getElementById('aff_puissance').style.backgroundColor = changeColor(data["P"]);
 });
 
-socket.on('B', function (data) {
-    temp_batterie = chartTemp.data.datasets[1][-1];
-    changeColor(temp_batterie);
-    aff_batterie.style.height = str(temp_batterie * 0.75) + 'vh';
-});
 
-
-function changeColor(data, aff) {
+function changeColor(data) {
+    var color = "green";
     switch(true) {
-        case(data < 15):
-            aff.style.BackgroundColor = "green";
-            break;
         case(data < 25):
-            aff.style.BackgroundColor = "blue";
+            color = "green";
             break;
         case(data < 35):
-            aff.style.BackgroundColor = "darkorange";
+            color = "blue";
+            break;
+        case(data < 45):
+            color = "darkorange";
             break;
         default:
-            aff.style.BackgroundColor = "red";
+            color = "red";
             break;
     }
+    return color
 };
