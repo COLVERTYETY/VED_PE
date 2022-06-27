@@ -13,7 +13,15 @@ body {
     grid-template-rows: repeat(2, 50vh);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    }
+}
+
+.smallgrid {
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    grid-template-rows: repeat(2, 49vh);
+    grid-column-gap: 1vw;
+    grid-row-gap: 0px;
+}
 
 .wide {
     grid-column-end: span 2;
