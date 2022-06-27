@@ -58,6 +58,9 @@ float kd = 0.0; //0.1
 
 // Déclaration des variables de stockage de la valeur des capteurs (valeur sur 10 bits)
 uint32_t actualtime;
+const float Dgrand = 280.0; // en cm
+const float Dpetit = 30.0; // en cm
+const float ratio = Dpetit/Dgrand;
 float tensionbatterie;
 float tensionmoteur;
 float temperaturebatterie;
@@ -126,28 +129,32 @@ void loop() {
   //On donne une consigne au moteur qui dépend de la puissance désirée
   float target = puissanceconsigne*potVal;
   tensionbatterie = analogRead(A0)/1024.0*vcc*10.0;
-  tensionmoteur = analogRead(A1)/1024.0*vcc*10.0;
+  // tensionmoteur = analogRead(A1)/1024.0*vcc*10.0;
+  // tensionmoteur = tensionbatterie*dutyCycle/255.0;
   courantMoteur = ((analogRead(A6)-Amp0)*(vcc/1024.0))/0.08;
 
-  puissanceMoteur = courantMoteur*tensionmoteur;// la veritable puissance du moteur en watt
-  
-
+  digitalWrite(9, LOW);
+  tensionmoteur = analogRead(A1)/1024.0*vcc*10.0;
+  analogWrite(9,(int)dutyCycle);
+  TCCR1B = TCCR1B & B11111000 | B00000001; // for PWM frequency of 3921.16 Hz
   //Calcul de la vitesse à partir du courant passant par le moteur
-  float VBEMF = (tensionmoteur) - (0.32*Rmotor) ;//https://www.precisionmicrodrives.com/ab-021
+  // float VBEMF = (tensionmoteur) - (0.32*Rmotor);//https://www.precisionmicrodrives.com/ab-021
+  float VBEMF = (tensionbatterie- tensionmoteur) - 0.32*Rmotor;
   rpm = VBEMF*omega;
 
+  puissanceMoteur = courantMoteur*tensionbatterie*dutyCycle/255.0;// la veritable puissance du moteur en watt
 
   //Calcul des températures
   temperaturemoteur = ((float)(analogRead(A7))/1024.0*vcc -0.5)*100.0; 
   temperaturebatterie = ((float)(analogRead(A2))/1024.0*vcc -0.5)*100.0; 
-  temperaturemosfet = ((float)(analogRead(A3))/1024.0*vcc -0.5)*100;0; 
+  temperaturemosfet = ((float)(analogRead(A3))/1024.0*vcc -0.5)*100.0; 
 
 
   //Asservissement en puissance
   if(potVal>0.02) {
     erreur = target - puissanceMoteur;//erreur = consigne - puissance = consigne - (courant * tensionMoteur)
   }else{
-    erreur = 0.0-puissanceMoteur;
+    erreur = 0.0-puissanceMoteur*10.0;
     //analogWrite(9,0);
   }
 
@@ -174,7 +181,7 @@ void loop() {
     Serial.print("{\"A\":");
     Serial.print(courantMoteur);
     Serial.print(",\"R\":");
-    Serial.print(rpm);
+    Serial.print(rpm);//+1047 * ratio
     Serial.print(",\"V\":");
     Serial.print(vitesse);
     Serial.print(",\"U\":");
@@ -194,7 +201,7 @@ void loop() {
     Serial.print(",\"P\":");
     Serial.print(puissanceMoteur);
     Serial.print(",\"L\":");
-    Serial.print(potVal/1023.0*255.0);
+    Serial.print(potVal*255.0);
     Serial.print("}");
     Serial.println();
   }
