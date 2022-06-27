@@ -33,13 +33,13 @@ socket.on("data", function (data) {
 function changeColor(data, max) {
     var color = "green";
     switch(true) {
-        case(data < 0.2 * max):
+        case(data < 0.25 * max):
             color = "green";
             break;
-        case(data < 0.4 * max):
+        case(data < 0.5 * max):
             color = "blue";
             break;
-        case(data < 0.6 * max):
+        case(data < 0.75 * max):
             color = "darkorange";
             break;
         default:
