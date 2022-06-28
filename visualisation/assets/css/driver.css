@@ -47,7 +47,7 @@ p {
     z-index: -1;
     height: 17px;
     width: 2%;
-    min-width: 3%;
+    min-width: 4%;
     border-radius: 25px;
     background-color: green;
     transition: all .1s ease-out;
