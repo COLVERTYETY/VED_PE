@@ -2,22 +2,35 @@
 <html>
 
 <head>
+  <title>VED - Driver</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="https://vinciecodrive.fr/wp-content/uploads/2018/02/cropped-logo_partial_ved-1.png">
   <link href="assets/css/driver.css" rel="stylesheet">
 </head>
 
 <body>
   <div class="mygrid">
     <div>
-      <p id="pourcentage" style="position: absolute; font-size: 14px; border-bottom: 2px solid #777; width: max-content; left: 0; top: -14px; padding: 14px; color: #777;">
+      <p id="pourcentage" style="text-align: right; position: absolute; font-size: 14px; border-bottom: 2px solid #777; width: 44px; left: 0; top: -14px; padding: 14px; color: #777;">
         100%
       </p>
       <p style="position: absolute; font-size: 14px; border-bottom: 2px solid #777; width: max-content; right: 0; top: -14px; padding: 14px; color: #777;">
         Vinci Eco Drive
       </p>
     </div>
-    <div></div>
+    <div>
+      <p class="description">RPM</p>
+      <div style="display: grid; grid-template-columns: repeat(4, 25%);">
+        <div></div>
+        <div style="text-align: right;width: 66px;">
+          <a id="rpm" style="color: #777;">0</a>
+        </div>
+        <div style="margin-left: auto; margin-right: auto;">
+          <p style="font-size: 11px;color: #777;margin-top: 25px;">rpm</p>
+        </div>
+      </div>
+    </div>
     <div style="grid-column: 3 / span 2;">
       <p class="description">Vitesse</p>
       <div style="display: grid; grid-template-columns: repeat(4, 25%);">
@@ -48,12 +61,13 @@
       <p><a id="temp_mosfet">0</a> °C</p>
     </div>
     <div></div>
-    <div>
+    <div style="grid-column: 5 / span 2;">
       <p class="description">Puissance</p>
-      <div id="aff_puissance"></div>
+      <div style="z-index: -1;height: 17px;min-width: 2%;border-radius: 25px;width: 31vw; background-color: #777;margin-left: 1vw;position: absolute;bottom:4vh;">
+        <div id="aff_puissance"></div>
+      </div>
       <p><a id="puissance">0</a> W</p>
     </div>
-    <div></div>
   </div>
   <script src="/socket.io/socket.io.js"></script>
   <script src="assets/js/driver.js"></script>
