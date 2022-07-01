@@ -37,6 +37,65 @@
     - D12 : MISO (liaison SPI avec datalogger)
     - D13 : SCK (liaison SPI avec datalogger)
 */
+
+// fir filter class
+class FIRFilter {
+  public:
+    FIRFilter(int order, float* coefficients);
+    float filter(float input);
+    void setCoefficients(float* coefficients);
+    void setOrder(int order);
+    int getOrder();
+    float *getCoefficients();
+    ~FIRFilter();
+  private:
+    int order;
+    float *coefficients;
+    float *inputs;
+};
+
+FIRFilter::FIRFilter(int order, float* coefficients) {
+  this->order = order;
+  this->coefficients = coefficients;
+  this->inputs = new float[order];
+}
+
+FIRFilter::~FIRFilter() {
+  delete[] inputs;
+}
+
+void FIRFilter::setCoefficients(float* coefficients) {
+  this->coefficients = coefficients;
+}
+
+void FIRFilter::setOrder(int order) {
+  this->order = order;
+}
+
+int FIRFilter::getOrder() {
+  return this->order;
+}
+
+float * FIRFilter::getCoefficients() {
+  return this->coefficients;
+}
+
+float FIRFilter::filter(float input) {
+  // shift the data
+  for (int i = 0; i < order; i++) {
+    inputs[i] = inputs[i + 1];
+  }
+  // add the new data
+  inputs[order - 1] = input;
+  // calculate the output
+  float output = 0;
+  for (int i = 0; i < order; i++) {
+    output += coefficients[i] * inputs[i];
+  }
+  return output;
+}
+
+
 // for platformio
 long readVcc();
 void interruption();
@@ -46,7 +105,7 @@ float erreurPrecedente;
 float sommeErreur;
 float deltaErreur;
 float kp = 0.0;//0.1
-float ki = 0.5;
+float ki = 0.3;
 float kd = 0.0; //0.1
 
 // Déclaration de la liaison série pour l'antenne
@@ -58,8 +117,8 @@ float kd = 0.0; //0.1
 
 // Déclaration des variables de stockage de la valeur des capteurs (valeur sur 10 bits)
 uint32_t actualtime;
-const float Dgrand = 280.0; // en cm
-const float Dpetit = 30.0; // en cm
+const float Dgrand = 280.0; // en mm
+const float Dpetit = 30.0; // en mm
 const float ratio = Dpetit/Dgrand;
 float tensionbatterie;
 float tensionmoteur;
@@ -70,16 +129,19 @@ float puissanceMoteur;
 float temperaturemoteur;
 float vitesse;
 float courantLimite = 1; //A
-float perimetrepardeux = 1.59;
+float perimetre = 1.59; // en m
+float target_speed = 10.0; // en km/h
+
 float lastoccurrence=0.0;
 float puissanceconsigne = 100.0; // watt
 float dutyCycle=0.0;
 float rpm;
 float period;
-float Rmotor=0.608;//ohm
+float Rmotor=1350.0;//0.608;//ohm
 float omega=102.0;//rpm/V
 uint8_t cpt = 0;
-float potVal;
+float potVal=0;
+FIRFilter pot_filter(5, new float[5]{0.2, 0.2, 0.2, 0.2, 0.2});
 float Amp0 = 102.0;
 int sendcount=0;
 int sendrate=2; // 2*50 = 100ms
@@ -114,6 +176,13 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(2),interruption,RISING);
   pinMode (LED_BUILTIN,OUTPUT);
     
+  // conversion vitesse en rpm
+  target_speed*=60.0;// km/min
+  target_speed/=1000.0;// m/min
+  target_speed/=perimetre;// rpm
+
+  // homme mort
+  pinMode(3, INPUT_PULLUP);
 }
 
 
@@ -123,55 +192,47 @@ void loop() {
   float vcc = readVcc()/1000.0;
   
   //Porcentage du potentiomètre (entre 0 et 1)
-  potVal = analogRead(A4)/1024.0;
+  potVal = pot_filter.filter(analogRead(A4)/1024.0);
   // potVal = 2.45*potVal*potVal*potVal -2.12*potVal*potVal + 0.67*potVal;
-
   
   //On donne une consigne au moteur qui dépend de la puissance désirée
-  float target = puissanceconsigne*potVal;
+  float target = target_speed*potVal;
+  if (potVal<0.1) target = 0.0;
   tensionbatterie = analogRead(A0)/1024.0*vcc*10.0;
-  // tensionmoteur = analogRead(A1)/1024.0*vcc*10.0;
-  // tensionmoteur = tensionbatterie*dutyCycle/255.0;
-  courantMoteur = ((analogRead(A6)-Amp0)*(vcc/1024.0))/0.08;
 
-  // digitalWrite(9, LOW);
-  tensionmoteur = analogRead(A1)/1024.0*vcc*10.0;
+  analogWrite(9, 0);
+  // delayMicroseconds(8);
+  courantMoteur = ((analogRead(A6)-Amp0)*(vcc/1024.0))/0.08;
+  tensionmoteur =((analogRead(A1))/1024.0*vcc*10.0);
+  //Activation du moteur
+  analogWrite(9,(int)dutyCycle);
+  TCCR1B = TCCR1B & B11111000 | B00000001; // for PWM frequency of 3921.16 Hz
   // analogWrite(9,(int)dutyCycle);
   // TCCR1B = TCCR1B & B11111000 | B00000001; // for PWM frequency of 3921.16 Hz
   //Calcul de la vitesse à partir du courant passant par le moteur
   // float VBEMF = (tensionmoteur) - (0.32*Rmotor);//https://www.precisionmicrodrives.com/ab-021
-  float VBEMF = (tensionbatterie- tensionmoteur) - courantMoteur*Rmotor;
+  float VBEMF = (tensionbatterie*potVal) - courantMoteur*Rmotor;// 0.6
+  // float VBEMF = (tensionbatterie*potVal/40.0) - courantMoteur*Rmotor;// 0.6
+  // float VBEMF =  (courantMoteur*Rmotor) - tensionmoteur + tensionbatterie -0.3;// 0.6
   rpm = VBEMF*omega;
 
-  puissanceMoteur = courantMoteur*(tensionbatterie- tensionmoteur);// la veritable puissance du moteur en watt
+  puissanceMoteur = courantMoteur*(tensionbatterie*potVal);// la veritable puissance du moteur en watt
 
+  // pid vitesse
+  erreur = target - rpm;
+  sommeErreur += erreur;
+  if (sommeErreur>60.0/ki) sommeErreur=60.0/ki;
+  if (sommeErreur<0.0) sommeErreur=0.0;
+
+  dutyCycle = ki*sommeErreur;
+  if (digitalRead(3)==HIGH) dutyCycle = 0.0;
+  analogWrite(9,(int)dutyCycle);
+  TCCR1B = TCCR1B & B11111000 | B00000001; // for PWM frequency of 3921.16 Hz
   //Calcul des températures
   temperaturemoteur = ((float)(analogRead(A7))/1024.0*vcc -0.5)*100.0; 
   temperaturebatterie = ((float)(analogRead(A2))/1024.0*vcc -0.5)*100.0; 
   temperaturemosfet = ((float)(analogRead(A3))/1024.0*vcc -0.5)*100.0; 
 
-
-  //Asservissement en puissance
-  if(potVal>0.02) {
-    erreur = target - puissanceMoteur;//erreur = consigne - puissance = consigne - (courant * tensionMoteur)
-  }else{
-    erreur = 0.0-puissanceMoteur*10.0;
-    //analogWrite(9,0);
-  }
-
-  //Erreur intégrale
-  sommeErreur +=(erreur>10.0)?10.0:erreur;
-  if(sommeErreur>(255.0/ki)) sommeErreur = 255.0/ki;
-  if(sommeErreur<0)sommeErreur=0;
-
-  //Pourcentage de la puissance de sortie
-  dutyCycle = sommeErreur*ki+erreur*kp;
-  if(dutyCycle>35)dutyCycle=35;
-  if(dutyCycle<0)dutyCycle=0;
-
-  //Activation du moteur
-  analogWrite(9,(int)dutyCycle);
-  TCCR1B = TCCR1B & B11111000 | B00000001; // for PWM frequency of 3921.16 Hz
   //pwmWrite(9, (int)dutyCycle);
   sendcount++;
   if (sendcount>=sendrate){
@@ -182,9 +243,9 @@ void loop() {
     Serial.print("{\"A\":");
     Serial.print(courantMoteur);
     Serial.print(",\"R\":");
-    Serial.print(rpm*ratio);//+1047 * ratio
+    Serial.print(rpm*ratio/60.0*perimetre*1000.0);
     Serial.print(",\"V\":");
-    Serial.print(vitesse);
+    Serial.print(vitesse/60.0*perimetre*1000.0);
     Serial.print(",\"U\":");
     Serial.print(tensionbatterie);
     Serial.print(",\"T\":");
@@ -202,7 +263,7 @@ void loop() {
     Serial.print(",\"P\":");
     Serial.print(puissanceMoteur);
     Serial.print(",\"L\":");
-    Serial.print(potVal*255.0);
+    Serial.print(potVal);
     Serial.print("}");
     Serial.println();
   }
