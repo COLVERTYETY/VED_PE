@@ -6,9 +6,8 @@ socket.on('connection', function () {
 });
 
 socket.on("data", function (data) {
-    document.getElementById('vitesse').textContent = Math.trunc(data["V"]);
+    document.getElementById('vitesse').textContent = Math.trunc((Math.PI * 0.508 * 60 * data["V"])/1000);
     document.getElementById('rpm').textContent = Math.trunc(data["R"]);
-    
 
     var max_puissance = 200;
     var max_temp = 80;
