@@ -63,10 +63,16 @@
     <div></div>
     <div style="grid-column: 5 / span 2;">
       <p class="description">Puissance</p>
+      <div style="display: grid; grid-template-columns: repeat(4, 25%);">
+        <div></div>
+        <div style="text-align: right;width: 100px;">
+          <a id="puissance">0</a>
+        </div>
+        <p style="font-size: 24px; text-align: left;margin-left: 33px;">W</p>
+      </div>
       <div style="z-index: -1;height: 17px;min-width: 2%;border-radius: 25px;width: 31vw; background-color: #777;margin-left: 1vw;position: absolute;bottom:4vh;">
         <div id="aff_puissance"></div>
       </div>
-      <p><a id="puissance">0</a> W</p>
     </div>
   </div>
   <script src="/socket.io/socket.io.js"></script>
