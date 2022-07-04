@@ -125,8 +125,8 @@ var chartTemp= new Chart(document.getElementById("chartTemp"), {
 });
 
 // calc bat %
-var Vmax=50;
-var Vmin=47;
+var Vmax=50.4;
+var Vmin=38.4;
 
 // calc rate
 var last_timestamp=0;
