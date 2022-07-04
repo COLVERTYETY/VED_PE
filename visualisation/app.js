@@ -67,7 +67,7 @@ app.get('/driver', function(req, res) {
 
 app.get('/download', function(req, res) {
     // find all files in the directory
-    var files = fs.readdirSync('./DATA');
+    var files = fs.readdirSync('DATA');
     var thehtml = fs.readFileSync('./download.html', 'utf8');
     const root = parse(thehtml);
     const body = root.querySelector('body');
