@@ -87,8 +87,13 @@ int sendcount=0;
 int sendrate=2; // 2*50 = 100ms
 bool ledstatus=false;
 
+// ICI NATHAN
+
+float control=255;
+
+
 void setup() {
-  Serial.begin (115200);
+  Serial.begin(115200);
   //mySerial.begin (9600);
 
   //Initialise les pins anologique
@@ -128,7 +133,7 @@ void loop() {
   float vcc = readVcc()/1000.0;
   
   //Porcentage du potentiomètre (entre 0 et 1)
-  potVal = (potVal+potValold+potValoldold+(analogRead(A4)/1024.0)*60.0)/4.0;
+  potVal = (potVal+potValold+potValoldold+(analogRead(A4)/1024.0)*control)/4.0;
   potValoldold = potValold;
   potValold = potVal;
   // potVal = 2.45*potVal*potVal*potVal -2.12*potVal*potVal + 0.67*potVal;
