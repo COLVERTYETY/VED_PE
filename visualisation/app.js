@@ -31,6 +31,26 @@ const { urlToHttpOptions } = require('url');
 var databuffer="";
 
 // databackup timer 60s
+const newFile = setInterval(function() {
+    if(databuffer.length > 0){
+        var title = __dirname+"/DATA/"+ new Date().toISOString().replace(".","") +".csv";
+        title=title.replace(/:/g,"_");
+        fs.appendFile(title,databuffer,function (err,data) {
+            if (err) {
+              return console.log(err);
+            }
+            console.log("DATA SAVED SUCESSFULLY !!");
+          });
+        databuffer="";
+    }
+  }, 50 * 1000);
+
+  app.get('', function(req, res) {
+    res.sendFile(path.join(__dirname, '/index.html'));
+});
+
+// databackup timer 60s
+/*
 const interval = setInterval(function() {
     // if last message received is over 30s old
     if( ((Date.now() - last_timestamp) >30000) && (databuffer.length>0)){
@@ -52,6 +72,7 @@ const interval = setInterval(function() {
   app.get('', function(req, res) {
     res.sendFile(path.join(__dirname, '/index.html'));
 });
+*/
 
 app.get('/lines', function(req, res) {
     res.sendFile(path.join(__dirname, '/lines.html'));
@@ -67,6 +88,7 @@ app.get('/driver', function(req, res) {
 
 app.get('/download', function(req, res) {
     // find all files in the directory
+    console.log(fs.thehtml);
     var files = fs.readdirSync('./DATA');
     var thehtml = fs.readFileSync('./download.html', 'utf8');
     const root = parse(thehtml);
@@ -136,7 +158,7 @@ net.createServer(function(sock) {
             // json = json.replace(/\n/g,"").replace(/\r/g,"");
             // console.log("json is: "+json);
 
-            databuffer+=json+"\n"
+            databuffer+=json+"\n,"
             // print the rate of data without skipping lines
             // console.log("rate is: "+ (now - last_timestamp)+"ms\r");
             buffer = "";

@@ -47,10 +47,10 @@ p {
     z-index: -1;
     height: 17px;
     width: 2%;
-    min-width: 3%;
+    min-width: 4%;
     border-radius: 25px;
     background-color: green;
-    transition: all .1s;
+    transition: all .1s ease-out;
 }
 
 #aff_moteur,
@@ -63,7 +63,7 @@ p {
     margin-left: 1vw;
     width: calc((100vw / 6) - 2vw);
     background-color: green;
-    transition: all .1s;
+    transition: all .1s ease-out;
 }
 
 .description {
