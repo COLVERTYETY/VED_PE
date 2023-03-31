@@ -105,10 +105,10 @@ app.get('/download', function (req, res) {
     const root = parse(thehtml);
     const body = root.querySelector('body');
     // for every file create a button
-    for (var i = 0; i < files.length; i++) {
-        var file = files[i];
+    for (var i = files.length; i > 0; i--) {
+        var file = files[i - 1];    // To show the files in a descending way
         // create a button
-        var button = parse('<a href="./data/' + file + '" download="./data/' + file + '"><button class="customButton">' + file + '</button></a>');
+        var button = parse('<div class="grid"><a href="./data/' + file + '" download="./data/' + file + '"><button class="customButton">' + file + '</button></a><button class="customButton" style="background-color:red" id="view' + file + '">View graphic</button></div>');
         // console.log(button);
         // add the button to the body
         body.appendChild(button);
@@ -119,6 +119,18 @@ app.get('/download', function (req, res) {
 
 app.post('/start', function (req, res) {
     global.record = true;
+    // Define the directory where the data files will be saved
+    const dataDir = './data';
+    // Define the base file name as the date of the day
+    const baseFileName = new Date().toISOString().slice(0, 10);
+    // Get the list of existing files in the directory that match the base file name
+    const existingFiles = fs.readdirSync(dataDir).filter(fileName => fileName.startsWith(baseFileName));
+    // Determine the suffix for the new file by incrementing the highest existing suffix
+    const suffix = existingFiles.length > 0 ? Math.max(...existingFiles.map(fileName => parseInt(fileName.split('_')[1]))) + 1 : 0;
+    // Define the new file name as "baseFileName_suffix.dat" => global file to be accessed when we need to add data in the file
+    global.newFileName = `${baseFileName}_${suffix}.dat`;
+    // Create the new file using fs.createWriteStream()
+    fs.createWriteStream(path.join(dataDir, global.newFileName)).end();
     res.sendStatus(200);
 });
 
@@ -164,13 +176,13 @@ server.listen(9999, () => {
 })
 
 net.createServer(function (sock) {
-    const mydate = new Date().toISOString().slice(0, 10);
     console.log('CONNECTED DATA:', sock.remoteAddress, ':', sock.remotePort);
     last_timestamp = Date.now();
     sock.setEncoding("utf8"); //set data encoding (either 'ascii', 'utf8', or 'base64')
     sock.on('data', function (data) {
+        // DATA RECORDING IF RECORD VARIABLE IS TRUE
         if (global.record) {
-            fs.appendFile(`./data/data-${mydate}.dat`, data + ",\n", (err) => {
+            fs.appendFile(`./data/${global.newFileName}`, data + ",\n", (err) => {
                 if (err) throw err;
             });
         }
