@@ -1,33 +1,41 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="assets/css/stufff.css" rel="stylesheet">
 </head>
+
 <body>
-  <div class ="mygrid">
+  <div class="recordBtns">
+    <button id="startBtn"></button>
+    <button id="stopBtn"></button>
+  </div>
+  <div class="mygrid">
     <div>
-      <canvas id="chartTemp" ></canvas>
+      <canvas id="chartTemp"></canvas>
     </div>
     <div>
-      <canvas id="chartCourant" ></canvas>
+      <canvas id="chartCourant"></canvas>
     </div>
     <div>
-      <canvas id="chartVoltage" ></canvas>
+      <canvas id="chartVoltage"></canvas>
     </div>
     <div>
-      <canvas id="chartVitesse" ></canvas>
-    </div>
-    <div >
-      <canvas id="chartPower" ></canvas>
+      <canvas id="chartVitesse"></canvas>
     </div>
     <div>
-      <canvas id="chartInput" ></canvas>
+      <canvas id="chartPower"></canvas>
+    </div>
+    <div>
+      <canvas id="chartInput"></canvas>
     </div>
   </div>
+  <script src="assets/js/record.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/socket.io/socket.io.js"></script>
-  <script src = "assets/js/lines.js"></script>
+  <script src="assets/js/lines.js"></script>
 </body>
+
 </html>

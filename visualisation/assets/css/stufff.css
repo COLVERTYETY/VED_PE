@@ -13,7 +13,7 @@
 
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    }
+}
 
 
 .wide {
@@ -22,7 +22,8 @@
 
 
 .customButton {
-    background-color: #4CAF50; /* Green */
+    background-color: #4CAF50;
+    /* Green */
     border: none;
     color: white;
     padding: 15px 32px;
@@ -34,3 +35,49 @@
     cursor: pointer;
 }
 
+.recordBtns {
+    z-index: 9999999;
+    position: fixed;
+    bottom: 1%;
+    right: 1%;
+    width: 50px;
+    display: grid;
+}
+
+#startBtn,
+#stopBtn {
+    border: none;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    font-size: 44px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+#startBtn:hover,
+#stopBtn:hover {
+    cursor: pointer;
+    filter: brightness(.7);
+}
+
+#startBtn i,
+#stopBtn i {
+    margin: 0 auto;
+    color: white;
+    font-weight: bold;
+}
+
+#startBtn {
+    border-radius: 17px 17px 0 0;
+    background-color: green;
+}
+
+#stopBtn {
+    border-radius: 0 0 17px 17px;
+    background-color: red;
+}

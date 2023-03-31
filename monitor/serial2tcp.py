@@ -15,7 +15,7 @@ signal.signal(signal.SIGINT, signal_handler)
 # create tcp socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.settimeout(5) # for 5 sec
-sock.connect(('0.0.0.0', 8080)) # '
+sock.connect(('152.228.217.88', 8080)) # '
 # check if connection succes
 print("connected")
 

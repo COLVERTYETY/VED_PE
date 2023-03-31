@@ -1,3 +1,9 @@
+// Set the path where CSV files will be stored
+//const filePath = '../data/';
+
+//const myfilename = filePath + getFilename();
+
+//fs.writeFile(myfilename, "");
 
 var socket = io();
 
@@ -14,7 +20,7 @@ socket.on("data", function (data) {
 
     document.getElementById('pourcentage').textContent = '100%'; // Math.trunc(100.0*(data["U"]- 38.4)/10) + '%';
 
-    document.getElementById('puissance').textContent = data["P"];;
+    document.getElementById('puissance').textContent = data["P"];
     document.getElementById('aff_puissance').style.width = data["P"] * (100/max_puissance) + '%';
 
     document.getElementById('temp_moteur').textContent = data["M"];;
@@ -30,9 +36,30 @@ socket.on("data", function (data) {
     document.getElementById('aff_batterie').style.backgroundColor = changeColor(data["B"], max_temp);
     document.getElementById('aff_mosfet').style.backgroundColor = changeColor(data["O"], max_temp);
     document.getElementById('aff_puissance').style.backgroundColor = changeColor(data["P"], max_puissance);
+
+    // const newdata = {
+    //     date: '2023-03-10',
+    //     time: '10:30:00',
+    //     vitesse: Math.trunc((Math.PI * 0.508 * 60 * data["V"])/1000),
+    //     rpm: Math.trunc(data["R"]),
+    //     pourcentage: '100%',
+    //     puissance: data["P"],
+    //     temp_moteur: data["M"],
+    //     temp_batterie: data["B"],
+    //     temp_mosfet: data["O"]
+    // };
+
+    //fs.appendFile(myfilename, newdata);
+    
 });
 
+//function getFilename() {
+//   const now = new Date();
+//   const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}-${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}${now.getSeconds().toString().padStart(2, '0')}`;
+//   return `${filePath}${timestamp}.csv`;
+// }
 
+// Color changing in function of the values (by steps of 25%)
 function changeColor(data, max) {
     var color = "green";
     switch(true) {

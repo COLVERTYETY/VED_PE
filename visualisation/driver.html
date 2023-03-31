@@ -10,12 +10,18 @@
 </head>
 
 <body>
+  <div class="recordBtns">
+    <button id="startBtn"></button>
+    <button id="stopBtn"></button>
+  </div>
   <div class="mygrid">
     <div>
-      <p id="pourcentage" style="text-align: right; position: absolute; font-size: 14px; border-bottom: 2px solid #777; width: 44px; left: 0; top: -14px; padding: 14px; color: #777;">
+      <p id="pourcentage"
+        style="text-align: right; position: absolute; font-size: 14px; border-bottom: 2px solid #777; width: 44px; left: 0; top: -14px; padding: 14px; color: #777;">
         100%
       </p>
-      <p style="position: absolute; font-size: 14px; border-bottom: 2px solid #777; width: max-content; right: 0; top: -14px; padding: 14px; color: #777;">
+      <p
+        style="position: absolute; font-size: 14px; border-bottom: 2px solid #777; width: max-content; right: 0; top: -14px; padding: 14px; color: #777;">
         Vinci Eco Drive
       </p>
     </div>
@@ -70,11 +76,13 @@
         </div>
         <p style="font-size: 24px; text-align: left;margin-left: 33px;">W</p>
       </div>
-      <div style="z-index: -1;height: 17px;min-width: 2%;border-radius: 25px;width: 31vw; background-color: #777;margin-left: 1vw;position: absolute;bottom:4vh;">
+      <div
+        style="z-index: -1;height: 17px;min-width: 2%;border-radius: 25px;width: 31vw; background-color: #777;margin-left: 1vw;position: absolute;bottom:4vh;">
         <div id="aff_puissance"></div>
       </div>
     </div>
   </div>
+  <script src="assets/js/record.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="assets/js/driver.js"></script>
 </body>

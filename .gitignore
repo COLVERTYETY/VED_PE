@@ -1,1 +1,7 @@
 *.csv
+node_modules
+data
+visualisation/.vscode
+visualisation/node_modules
+monitor/__pycache__
+monitor/.checksockch.swp
