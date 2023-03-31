@@ -1,0 +1,36 @@
+.recordBtns {
+    z-index: 9999999;
+    position: fixed;
+    top: calc(50vh - 50px);
+    right: 9px;
+    width: 50px;
+    display: grid;
+}
+
+#startBtn,
+#stopBtn {
+    border: none;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    font-size: 33px;
+}
+
+#startBtn:hover,
+#stopBtn:hover {
+    cursor: pointer;
+    filter: brightness(.7);
+}
+
+#startBtn {
+    border-radius: 17px 17px 0 0;
+    background-color: green;
+}
+
+#stopBtn {
+    border-radius: 0 0 17px 17px;
+    background-color: red;
+}

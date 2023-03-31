@@ -127,6 +127,10 @@ app.post('/stop', function (req, res) {
     res.sendStatus(200);
 });
 
+app.get('/statusrecord', function (req, res) {
+    res.json({ record: global.record });
+});
+
 // app.post('/data', function (request, response) {
 //     var myJson = request.body;      // your JSON
 //     console.log(myJson);
